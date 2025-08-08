@@ -1,6 +1,6 @@
 {
   "name": "server",
-  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "$schema": "../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "apps/server/src",
   "projectType": "application",
   "tags": [],
@@ -9,11 +9,13 @@
       "executor": "nx:run-commands",
       "options": {
         "command": "webpack-cli build",
-        "args": ["--node-env=production"]
+        "args": ["--node-env=production"],
+        "cwd": "apps/server"
       },
       "configurations": {
         "development": {
-          "args": ["--node-env=development"]
+          "args": ["--node-env=development"],
+          "cwd": "apps/server"
         }
       }
     },

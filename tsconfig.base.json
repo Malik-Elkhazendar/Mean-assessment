@@ -14,7 +14,16 @@
     "skipLibCheck": true,
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
-    "paths": {}
+    "paths": {
+      "@mean-assessment/constants": ["libs/shared/constants/src/index.ts"],
+      "@mean-assessment/data-models": ["libs/shared/data-models/src/index.ts"],
+      "@mean-assessment/dto": ["libs/shared/dto/src/index.ts"],
+      "@mean-assessment/logger": ["libs/shared/logger/src/index.ts"],
+      "@mean-assessment/shared/data-models": ["shared/src/index.ts"],
+      "@mean-assessment/ui": ["libs/shared/ui/src/index.ts"],
+      "@mean-assessment/utils": ["libs/shared/utils/src/index.ts"],
+      "@mean-assessment/validation": ["libs/shared/validation/src/index.ts"]
+    }
   },
   "exclude": ["node_modules", "tmp"]
 }
