@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verify Your Email Address</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            background-color: #f6f9fc;
+            margin: 0;
+            padding: 0;
+            line-height: 1.6;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px 30px;
+            text-align: center;
+        }
+        .header h1 {
+            margin: 0;
+            font-size: 28px;
+            font-weight: 600;
+        }
+        .content {
+            padding: 40px 30px;
+        }
+        .greeting {
+            font-size: 18px;
+            color: #333;
+            margin-bottom: 20px;
+        }
+        .message {
+            color: #666;
+            font-size: 16px;
+            margin-bottom: 30px;
+        }
+        .verification-button {
+            display: inline-block;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            text-decoration: none;
+            padding: 16px 32px;
+            border-radius: 6px;
+            font-weight: 600;
+            font-size: 16px;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .verification-button:hover {
+            opacity: 0.9;
+        }
+        .token-section {
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 6px;
+            border-left: 4px solid #667eea;
+            margin-bottom: 30px;
+        }
+        .token {
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+            font-size: 18px;
+            font-weight: bold;
+            color: #333;
+            letter-spacing: 2px;
+            word-break: break-all;
+        }
+        .info {
+            background-color: #e3f2fd;
+            color: #1976d2;
+            padding: 15px;
+            border-radius: 6px;
+            border-left: 4px solid #2196f3;
+            margin-bottom: 20px;
+        }
+        .footer {
+            background-color: #f8f9fa;
+            padding: 30px;
+            text-align: center;
+            color: #666;
+            font-size: 14px;
+        }
+        .footer p {
+            margin: 5px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>✉️ Verify Your Email</h1>
+        </div>
+        
+        <div class="content">
+            <div class="greeting">
+                Hello {{firstName}},
+            </div>
+            
+            <div class="message">
+                Welcome to MEAN Assessment! We're excited to have you on board. To complete your account setup and ensure the security of your account, please verify your email address.
+            </div>
+            
+            <div class="info">
+                <strong>📋 What's Next:</strong> Use the verification token below in the email verification form to activate your account and start using all features.
+            </div>
+            
+            <div class="token-section">
+                <p><strong>Your email verification token:</strong></p>
+                <div class="token">{{verificationToken}}</div>
+                <p style="margin-top: 15px; font-size: 14px; color: #666;">
+                    Use this token in the email verification form or API endpoint.
+                </p>
+            </div>
+            
+            <div class="message">
+                Once verified, you'll be able to:
+                <ul style="color: #666; padding-left: 20px;">
+                    <li>Access your personal dashboard</li>
+                    <li>Manage your product catalog</li>
+                    <li>Update your profile settings</li>
+                    <li>Receive important account notifications</li>
+                </ul>
+            </div>
+            
+            <div class="message">
+                If you didn't create an account with us, please ignore this email or contact our support team.
+            </div>
+        </div>
+        
+        <div class="footer">
+            <p><strong>MEAN Assessment Platform</strong></p>
+            <p>This is an automated email. Please do not reply to this message.</p>
+            <p>If you need help, please contact our support team.</p>
+        </div>
+    </div>
+</body>
+</html>
