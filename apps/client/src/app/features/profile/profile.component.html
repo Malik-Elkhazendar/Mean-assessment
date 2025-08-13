@@ -1,0 +1,17 @@
+<div class="container">
+  <ui-card>
+    <div class="text-center mb-4">
+      <h1 class="mat-headline">{{ profileTitle }}</h1>
+      <p class="mat-body">{{ profileSubtitle }}</p>
+    </div>
+    
+    <div class="profile-actions">
+      <ui-button 
+        [variant]="'raised'" 
+        [color]="'primary'"
+        [content]="'Edit Profile'"
+        routerLink="/profile/edit">
+      </ui-button>
+    </div>
+  </ui-card>
+</div>

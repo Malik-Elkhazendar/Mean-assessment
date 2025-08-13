@@ -15,15 +15,20 @@ import { EmailService } from './services/email.service';
     MailerModule.forRootAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
-      useFactory: async (configService: ConfigService) => ({
-        transport: configService.get('email.transport'),
-        defaults: configService.get('email.defaults'),
-        template: {
-          dir: configService.get('email.template.dir'),
-          adapter: new HandlebarsAdapter(),
-          options: configService.get('email.template.options'),
-        },
-      }),
+      useFactory: async (configService: ConfigService) => {
+        const templateDir = configService.get<string>('email.template.dir');
+        const options = configService.get('email.template.options');
+        return {
+          transport: configService.get('email.transport'),
+          defaults: configService.get('email.defaults'),
+          template: {
+            // Use resolved dir from config; falls back to module default if undefined
+            dir: templateDir,
+            adapter: new HandlebarsAdapter(),
+            options,
+          },
+        };
+      },
     }),
   ],
   providers: [EmailService],

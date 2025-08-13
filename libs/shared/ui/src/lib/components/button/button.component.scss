@@ -1,0 +1,608 @@
+// Base button styles - Enhanced centering robustness
+button {
+  position: relative;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  font-family: var(--font-family, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif);
+  font-weight: var(--font-semibold, 500);
+  text-transform: none;
+  letter-spacing: 0.025em;
+  transition: all var(--transition-normal, 0.2s) ease;
+  border-radius: var(--radius, 8px);
+  overflow: hidden;
+  cursor: pointer;
+  user-select: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  
+  // Subtle animation on hover
+  &:hover:not([disabled]) {
+    transform: translateY(-1px);
+  }
+  
+  &:active:not([disabled]) {
+    transform: translateY(0);
+    transition: all var(--transition-fast) ease;
+  }
+  
+  // Focus ring
+  &:focus-visible {
+    outline: 2px solid var(--primary-color);
+    outline-offset: 2px;
+  }
+  
+  // Ripple effect enhancement
+  ::ng-deep .mat-ripple-element {
+    background-color: rgba(var(--primary-rgb), 0.1);
+  }
+}
+
+// Button content wrapper - Enhanced robustness against ::ng-deep overrides
+.button-content-wrapper {
+  position: relative;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 100%;
+  height: 100%;
+}
+
+.button-content {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: var(--space-2, 8px);
+  transition: opacity var(--transition-normal, 0.2s) ease;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  width: 100%;
+  
+  &.loading {
+    opacity: 0;
+  }
+}
+
+.button-projected {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  width: 100%;
+}
+
+// Icon styles
+.button-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: inherit;
+  transition: transform var(--transition-fast) ease;
+  
+  &-start {
+    margin-right: var(--space-1);
+  }
+  
+  &-end {
+    margin-left: var(--space-1);
+  }
+  
+  &-only {
+    transition: opacity var(--transition-normal) ease;
+    
+    &.loading {
+      opacity: 0;
+    }
+  }
+}
+
+.button-icon-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+}
+
+// Text styles - Enhanced centering
+.button-text {
+  font-weight: inherit;
+  line-height: 1.2;
+  white-space: nowrap;
+  text-decoration: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-align: center;
+  flex-shrink: 0;
+}
+
+// Loading states
+.button-loading-overlay {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 1;
+}
+
+.button-spinner {
+  ::ng-deep circle {
+    stroke: currentColor;
+    stroke-linecap: round;
+  }
+}
+
+// Size variants with mobile-first touch targets
+.button-small {
+  font-size: var(--text-xs, 0.75rem);
+  padding: var(--space-2, 8px) var(--space-3, 12px);
+  min-height: 36px; // Increased for better touch
+  border-radius: var(--radius-sm, 4px);
+  
+  .button-icon {
+    font-size: 16px;
+    width: 16px;
+    height: 16px;
+  }
+  
+  .button-text {
+    font-size: inherit;
+    line-height: 1.2;
+  }
+  
+  // Ensure minimum touch target on mobile
+  @media (max-width: 768px) {
+    min-height: 44px;
+    padding: var(--space-3) var(--space-4);
+  }
+}
+
+.button-medium {
+  font-size: var(--text-sm, 0.875rem);
+  padding: var(--space-2, 8px) var(--space-4, 16px);
+  min-height: 44px; // Touch target compliant
+  
+  .button-icon {
+    font-size: 18px;
+    width: 18px;
+    height: 18px;
+  }
+  
+  .button-text {
+    font-size: inherit;
+    line-height: 1.2;
+  }
+  
+  @media (max-width: 768px) {
+    min-height: 48px; // Slightly larger on mobile
+    padding: var(--space-3) var(--space-4);
+  }
+}
+
+.button-large {
+  font-size: var(--text-base, 1rem);
+  padding: var(--space-3, 12px) var(--space-6, 24px);
+  min-height: 48px; // Good touch target
+  border-radius: var(--radius-lg, 12px);
+  
+  .button-icon {
+    font-size: 20px;
+    width: 20px;
+    height: 20px;
+  }
+  
+  .button-text {
+    font-size: inherit;
+    line-height: 1.2;
+  }
+  
+  @media (max-width: 768px) {
+    min-height: 52px; // Even larger on mobile for primary actions
+    padding: var(--space-4) var(--space-6);
+  }
+}
+
+.button-full-width {
+  width: 100%;
+}
+
+// Color variants (overriding Material Design defaults)
+button {
+  // Basic color variant
+  &[color="basic"] {
+    background: var(--surface-color);
+    color: var(--text-primary);
+    border: 1px solid var(--border-color);
+    
+    &:hover:not([disabled]) {
+      background: var(--surface-hover);
+      border-color: var(--primary-color);
+      box-shadow: var(--elevation-2);
+    }
+    
+    &:active:not([disabled]) {
+      background: var(--surface-active);
+    }
+    
+    &[disabled] {
+      background: var(--surface-disabled);
+      color: var(--text-disabled);
+      border-color: var(--border-disabled);
+    }
+  }
+  
+  // Enhanced primary color
+  &[color="primary"] {
+    &[mat-raised-button], &[mat-flat-button] {
+      background: linear-gradient(135deg, var(--primary-500) 0%, var(--primary-600) 100%);
+      
+      &:hover:not([disabled]) {
+        background: linear-gradient(135deg, var(--primary-600) 0%, var(--primary-700) 100%);
+        box-shadow: var(--elevation-6);
+      }
+    }
+    
+    &[mat-stroked-button] {
+      border-color: var(--primary-color);
+      
+      &:hover:not([disabled]) {
+        background: var(--primary-50);
+        border-color: var(--primary-600);
+      }
+    }
+  }
+  
+  // Enhanced accent color
+  &[color="accent"] {
+    &[mat-raised-button], &[mat-flat-button] {
+      background: linear-gradient(135deg, var(--accent-500) 0%, var(--accent-600) 100%);
+      
+      &:hover:not([disabled]) {
+        background: linear-gradient(135deg, var(--accent-600) 0%, var(--accent-700) 100%);
+      }
+    }
+  }
+  
+  // Enhanced warn color
+  &[color="warn"] {
+    &[mat-raised-button], &[mat-flat-button] {
+      background: linear-gradient(135deg, var(--error-500) 0%, var(--error-600) 100%);
+      
+      &:hover:not([disabled]) {
+        background: linear-gradient(135deg, var(--error-600) 0%, var(--error-700) 100%);
+      }
+    }
+  }
+  
+  // Modern teal color (replaces blue primary)
+  &[color="teal"] {
+    &[mat-raised-button], &[mat-flat-button] {
+      background: linear-gradient(135deg, #14b8a6 0%, #0d9488 100%);
+      color: white;
+      
+      &:hover:not([disabled]) {
+        background: linear-gradient(135deg, #0d9488 0%, #0f766e 100%);
+        box-shadow: 0 8px 25px rgba(20, 184, 166, 0.3);
+        transform: translateY(-2px);
+      }
+    }
+    
+    &[mat-stroked-button], &[mat-button] {
+      color: #0d9488;
+      border-color: #14b8a6;
+      
+      &:hover:not([disabled]) {
+        background: rgba(20, 184, 166, 0.1);
+        border-color: #0d9488;
+        color: #0f766e;
+      }
+    }
+  }
+  
+  // Success green color
+  &[color="success"] {
+    &[mat-raised-button], &[mat-flat-button] {
+      background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+      color: white;
+      
+      &:hover:not([disabled]) {
+        background: linear-gradient(135deg, #059669 0%, #047857 100%);
+        box-shadow: 0 8px 25px rgba(16, 185, 129, 0.3);
+        transform: translateY(-2px);
+      }
+    }
+    
+    &[mat-stroked-button], &[mat-button] {
+      color: #059669;
+      border-color: #10b981;
+      
+      &:hover:not([disabled]) {
+        background: rgba(16, 185, 129, 0.1);
+        border-color: #059669;
+      }
+    }
+  }
+  
+  // Info cyan color
+  &[color="info"] {
+    &[mat-raised-button], &[mat-flat-button] {
+      background: linear-gradient(135deg, #06b6d4 0%, #0891b2 100%);
+      color: white;
+      
+      &:hover:not([disabled]) {
+        background: linear-gradient(135deg, #0891b2 0%, #0e7490 100%);
+        box-shadow: 0 8px 25px rgba(6, 182, 212, 0.3);
+        transform: translateY(-2px);
+      }
+    }
+    
+    &[mat-stroked-button], &[mat-button] {
+      color: #0891b2;
+      border-color: #06b6d4;
+      
+      &:hover:not([disabled]) {
+        background: rgba(6, 182, 212, 0.1);
+        border-color: #0891b2;
+      }
+    }
+  }
+}
+
+// Icon button specific styles
+button[mat-icon-button] {
+  border-radius: var(--radius-full);
+  
+  &.button-small {
+    width: 32px;
+    height: 32px;
+    min-width: 32px;
+    min-height: 32px;
+  }
+  
+  &.button-medium {
+    width: 40px;
+    height: 40px;
+    min-width: 40px;
+    min-height: 40px;
+  }
+  
+  &.button-large {
+    width: 48px;
+    height: 48px;
+    min-width: 48px;
+    min-height: 48px;
+  }
+  
+  &:hover:not([disabled]) {
+    background: rgba(var(--primary-rgb), 0.08);
+  }
+}
+
+// FAB specific styles
+button[mat-fab],
+button[mat-mini-fab] {
+  box-shadow: var(--elevation-6);
+  transition: all var(--transition-normal) ease;
+  
+  &:hover:not([disabled]) {
+    box-shadow: var(--elevation-12);
+    transform: translateY(-2px) scale(1.02);
+  }
+  
+  &:active:not([disabled]) {
+    transform: translateY(-1px) scale(1.01);
+  }
+  
+  // Gradient backgrounds for FABs
+  &[color="primary"] {
+    background: linear-gradient(135deg, var(--primary-500) 0%, var(--primary-600) 100%);
+  }
+  
+  &[color="accent"] {
+    background: linear-gradient(135deg, var(--accent-500) 0%, var(--accent-600) 100%);
+  }
+  
+  &[color="warn"] {
+    background: linear-gradient(135deg, var(--error-500) 0%, var(--error-600) 100%);
+  }
+}
+
+// Disabled state
+button[disabled] {
+  cursor: not-allowed;
+  opacity: 0.6;
+  transform: none !important;
+  box-shadow: none !important;
+  
+  .button-content,
+  .button-icon {
+    opacity: 0.5;
+  }
+}
+
+// Loading state
+button[aria-busy="true"] {
+  cursor: wait;
+  
+  &:hover {
+    transform: none;
+  }
+}
+
+// Enhanced mobile responsiveness with button groups
+@media (max-width: 768px) {
+  // Button groups should stack on mobile
+  .button-group {
+    flex-direction: column;
+    width: 100%;
+    
+    button {
+      width: 100%;
+      margin: var(--space-1) 0;
+      
+      &:first-child {
+        margin-top: 0;
+      }
+      
+      &:last-child {
+        margin-bottom: 0;
+      }
+    }
+  }
+  
+  // Better touch feedback on mobile
+  button {
+    &:active:not([disabled]) {
+      transform: scale(0.98);
+      transition: transform 0.1s ease;
+    }
+  }
+  
+  // FAB adjustments for mobile
+  button[mat-fab] {
+    &:hover:not([disabled]) {
+      transform: translateY(-1px) scale(1.01);
+    }
+  }
+  
+  // Icon buttons need proper spacing on mobile
+  button[mat-icon-button] {
+    &.button-small {
+      width: 44px;
+      height: 44px;
+      min-width: 44px;
+      min-height: 44px;
+    }
+    
+    &.button-medium {
+      width: 48px;
+      height: 48px;
+      min-width: 48px;
+      min-height: 48px;
+    }
+  }
+}
+
+@media (max-width: 480px) {
+  .button-full-width {
+    .button-content {
+      gap: var(--space-2); // More space between icon and text
+    }
+    
+    .button-text {
+      font-size: var(--text-sm);
+      line-height: 1.3;
+    }
+  }
+  
+  // Ensure proper spacing between stacked buttons
+  .button-group {
+    gap: var(--space-3);
+    
+    button {
+      min-height: 48px; // Larger touch targets on small screens
+    }
+  }
+}
+
+// Touch device optimizations
+@media (hover: none) and (pointer: coarse) {
+  button {
+    // Enhanced touch feedback
+    &:active:not([disabled]) {
+      transform: scale(0.96);
+      transition: transform 0.1s ease;
+    }
+    
+    // Remove hover effects that don't work on touch
+    &:hover:not([disabled]) {
+      transform: none;
+    }
+    
+    // Focus handling for touch devices
+    &:focus-visible {
+      outline: 3px solid var(--primary-color);
+      outline-offset: 2px;
+    }
+  }
+  
+  // Ensure all buttons meet minimum touch target size
+  .button-small {
+    min-height: 44px;
+    min-width: 44px;
+  }
+  
+  .button-medium {
+    min-height: 48px;
+  }
+  
+  .button-large {
+    min-height: 52px;
+  }
+}
+
+// High contrast mode
+@media (prefers-contrast: high) {
+  button {
+    border-width: 2px;
+    
+    &[color="basic"] {
+      border-color: var(--text-primary);
+    }
+    
+    &:focus-visible {
+      outline-width: 3px;
+    }
+  }
+  
+  .button-spinner ::ng-deep circle {
+    stroke-width: 3px;
+  }
+}
+
+// Reduced motion
+@media (prefers-reduced-motion: reduce) {
+  button,
+  .button-content,
+  .button-icon,
+  .button-spinner {
+    transition: none !important;
+    animation: none !important;
+  }
+  
+  button:hover:not([disabled]),
+  button:active:not([disabled]) {
+    transform: none !important;
+  }
+}
+
+// Dark theme adjustments
+@media (prefers-color-scheme: dark) {
+  button[color="basic"] {
+    border-color: var(--border-color-dark, var(--border-color));
+    
+    &:hover:not([disabled]) {
+      background: var(--surface-hover-dark, var(--surface-hover));
+    }
+  }
+}
+
+// Print styles
+@media print {
+  button {
+    background: white !important;
+    color: black !important;
+    border: 1px solid black !important;
+    box-shadow: none !important;
+    
+    .button-spinner {
+      display: none !important;
+    }
+  }
+}

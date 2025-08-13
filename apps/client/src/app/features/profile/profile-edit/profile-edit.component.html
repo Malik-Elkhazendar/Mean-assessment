@@ -1,0 +1,61 @@
+<div class="profile-edit-container">
+  <div class="page-header">
+    <h1 class="page-title">Edit Profile</h1>
+    <p class="page-subtitle">Update your profile information</p>
+  </div>
+
+  <ui-card variant="outlined" class="profile-form-card">
+    <form [formGroup]="profileForm" (ngSubmit)="onSubmit()" class="profile-form">
+      
+      <div class="form-section">
+        <h3>Personal Information</h3>
+        
+        <div class="form-row-group">
+          <ui-form-input
+            label="First Name"
+            placeholder="Enter first name"
+            [required]="true"
+            [control]="profileForm.get('firstName')"
+            [error]="getFieldError('firstName')"
+            icon="person">
+          </ui-form-input>
+          
+          <ui-form-input
+            label="Last Name"
+            placeholder="Enter last name"
+            [required]="true"
+            [control]="profileForm.get('lastName')"
+            [error]="getFieldError('lastName')"
+            icon="person">
+          </ui-form-input>
+        </div>
+
+        
+      </div>
+
+      <ui-alert *ngIf="error" type="error" [dismissible]="true" [message]="error" (dismissed)="clearError()"></ui-alert>
+
+      <ui-alert *ngIf="successMessage" type="success" [message]="successMessage"></ui-alert>
+
+      <div class="form-actions">
+        <ui-button
+          type="button"
+          variant="text"
+          color="primary"
+          content="Cancel"
+          routerLink="/dashboard"
+          [fullWidth]="false">
+        </ui-button>
+        
+        <ui-button
+          type="submit"
+          variant="raised"
+          color="primary"
+          content="Update Profile"
+          [disabled]="profileForm.invalid || isLoading"
+          [fullWidth]="false">
+        </ui-button>
+      </div>
+    </form>
+  </ui-card>
+</div>

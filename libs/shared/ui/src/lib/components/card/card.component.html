@@ -1,0 +1,66 @@
+<mat-card [class]="getCardClasses()">
+  <!-- Header Section -->
+  <mat-card-header *ngIf="hasHeader">
+    <div *ngIf="avatar" mat-card-avatar [class]="'avatar-' + avatarType">
+      <mat-icon *ngIf="avatarType === 'icon' && avatar" fontSet="material-icons" [fontIcon]="avatar" [attr.aria-hidden]="true"></mat-icon>
+      <img *ngIf="avatarType === 'image'" [src]="avatar" [alt]="title || 'Avatar'" loading="lazy">
+      <span *ngIf="avatarType === 'text'" class="avatar-text" [attr.aria-label]="'Avatar: ' + avatar">{{ avatar }}</span>
+    </div>
+    
+    <mat-card-title *ngIf="title">{{ title }}</mat-card-title>
+    <mat-card-subtitle *ngIf="subtitle">{{ subtitle }}</mat-card-subtitle>
+    
+    <div class="header-actions" *ngIf="headerActions && headerActions.length > 0">
+      <button 
+        *ngFor="let action of headerActions; trackBy: trackByAction"
+        mat-icon-button
+        [disabled]="action.disabled"
+        (click)="onActionClick(action)"
+        [attr.aria-label]="action.label"
+        class="header-action-btn">
+        <mat-icon *ngIf="action.icon" fontSet="material-icons" [fontIcon]="action.icon"></mat-icon>
+      </button>
+    </div>
+  </mat-card-header>
+
+  <!-- Image Section -->
+  <div *ngIf="image" class="card-image-container">
+    <img 
+      mat-card-image 
+      [src]="image" 
+      [alt]="imageAlt || title || 'Card image'"
+      [class.card-image-cover]="imageFit === 'cover'"
+      [class.card-image-contain]="imageFit === 'contain'"
+      loading="lazy"
+      (error)="onImageError($event)">
+  </div>
+
+  <!-- Content Section -->
+  <mat-card-content [class]="contentClass">
+    <p *ngIf="description" class="card-description">{{ description }}</p>
+    <ng-content></ng-content>
+  </mat-card-content>
+
+  <!-- Actions Section -->
+  <mat-card-actions *ngIf="hasActions" [align]="actionsAlignment" class="card-actions">
+    <ui-button
+      *ngFor="let action of actions; trackBy: trackByAction"
+      [variant]="action.variant || 'text'"
+      [color]="action.color || 'primary'"
+      [disabled]="!!action.disabled"
+      [content]="action.label"
+      [icon]="action.icon"
+      (buttonClick)="onActionClick(action)"
+      class="card-action-btn">
+    </ui-button>
+  </mat-card-actions>
+
+  <!-- Footer Section -->
+  <div *ngIf="hasFooter" class="card-footer">
+    <mat-divider></mat-divider>
+    <div class="card-footer-content">
+      <ng-content select="[slot=footer]"></ng-content>
+      <div *ngIf="footerText" class="footer-text">{{ footerText }}</div>
+    </div>
+  </div>
+</mat-card>

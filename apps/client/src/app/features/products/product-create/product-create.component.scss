@@ -1,0 +1,310 @@
+.product-create-container {
+  padding: var(--space-6);
+  max-width: 1200px;
+  margin: 0 auto;
+  min-height: calc(100vh - 68px);
+  background: var(--background-color);
+}
+
+/* Page Header */
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--space-8);
+  flex-wrap: wrap;
+  gap: var(--space-4);
+}
+
+.header-content {
+  flex: 1;
+  min-width: 300px;
+}
+
+.page-title {
+  font-size: var(--text-4xl);
+  color: var(--text-primary);
+  margin-bottom: var(--space-2);
+  font-weight: var(--font-regular);
+}
+
+.page-subtitle {
+  font-size: var(--text-lg);
+  color: var(--text-secondary);
+  margin: 0;
+}
+
+.header-actions {
+  display: flex;
+  gap: 12px;
+}
+
+/* Form Section */
+.form-section {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 32px;
+  margin-bottom: 32px;
+}
+
+.form-card {
+  padding: 32px;
+}
+
+.form-header {
+  margin-bottom: 32px;
+  text-align: center;
+}
+
+.form-header h2 {
+  font-size: 1.5rem;
+  color: var(--text-primary);
+  margin-bottom: 8px;
+}
+
+.form-header p {
+  color: var(--text-secondary);
+  margin: 0;
+}
+
+/* Form Layout */
+.product-form {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+.form-section-group {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.section-title {
+  font-size: 1.5rem; /* bigger section title */
+  color: var(--text-primary);
+  margin: 0;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--divider-color);
+}
+
+.form-row {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+/* Make single-row fields (like Description) span the full card width */
+.form-row .input-with-tooltip,
+.form-row ui-form-input,
+.form-row .mat-mdc-form-field {
+  width: 100%;
+}
+
+/* Ensure textarea uses the full width and a comfortable height */
+::ng-deep textarea.mat-mdc-input-element {
+  width: 100% !important;
+  min-height: 140px;
+}
+
+.form-row-group {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(320px, 1fr));
+  gap: 24px;
+  justify-content: center; /* center columns like dashboard */
+}
+
+/* Make form field label text larger */
+::ng-deep .mat-mdc-form-field .mdc-floating-label,
+::ng-deep .mat-mdc-form-field .mdc-floating-label--float-above {
+  font-size: 0.95rem;
+}
+
+/* Increase input text size a bit for readability */
+::ng-deep .mat-mdc-form-field-input-control {
+  font-size: 0.975rem;
+}
+
+.form-col {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Form Actions */
+.form-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  padding-top: 24px;
+  border-top: 1px solid var(--divider-color);
+  flex-wrap: wrap;
+  
+  button {
+    // Ensure buttons are clickable
+    pointer-events: auto !important;
+    position: relative;
+    z-index: 1;
+    
+    // Material button icon spacing
+    mat-icon {
+      margin-right: 8px;
+      font-size: 18px;
+      vertical-align: middle;
+    }
+    
+    &:not(:disabled) {
+      cursor: pointer;
+    }
+    
+    &:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+  }
+}
+
+.action-group {
+  display: flex;
+  gap: 12px;
+}
+
+.action-group-primary {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+/* Tooltip Container */
+.input-with-tooltip {
+  display: flex;
+  width: 100%;
+  
+  > ui-tooltip {
+    width: 100%;
+    display: block;
+  }
+}
+
+/* Preview Section */
+.preview-section {
+  margin-top: 32px;
+}
+
+.preview-card {
+  max-width: 500px;
+  margin: 0 auto;
+}
+
+.product-preview {
+  padding: 24px;
+}
+
+.preview-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.preview-header h3 {
+  font-size: 1.25rem;
+  color: var(--text-primary);
+  margin: 0;
+  flex: 1;
+}
+
+.preview-price {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--primary-color);
+}
+
+.preview-description {
+  color: var(--text-secondary);
+  margin-bottom: 24px;
+  line-height: 1.5;
+}
+
+.preview-details {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.preview-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--divider-color);
+  font-size: 0.875rem;
+}
+
+.preview-item:last-child {
+  border-bottom: none;
+}
+
+.preview-item strong {
+  color: var(--text-primary);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .product-create-container {
+    padding: 16px;
+  }
+
+  .page-header {
+    flex-direction: column;
+    align-items: stretch;
+    text-align: center;
+  }
+
+  .header-content {
+    min-width: unset;
+  }
+
+  .page-title {
+    font-size: 1.875rem;
+  }
+
+  .form-card {
+    padding: 24px 16px;
+  }
+
+  .form-row-group {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  .form-actions {
+    flex-direction: column;
+    align-items: stretch;
+    
+    .action-group,
+    .action-group-primary {
+      width: 100%;
+      flex-direction: column;
+      gap: 8px;
+      
+      ::ng-deep ui-button {
+        width: 100%;
+      }
+    }
+  }
+
+  .preview-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+
+  .preview-item {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+  }
+}

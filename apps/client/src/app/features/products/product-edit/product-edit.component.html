@@ -1,0 +1,188 @@
+<div class="product-edit-container">
+  <!-- Page Header -->
+  <div class="page-header">
+    <div class="header-content">
+      <h1 class="page-title">Edit Product</h1>
+      <p class="page-subtitle">Update product information and inventory details</p>
+    </div>
+    
+    <div class="header-actions">
+      <ui-button
+        variant="text"
+        color="primary"
+        content="Back to Products"
+        routerLink="/products"
+        icon="arrow_back"
+        [fullWidth]="false">
+      </ui-button>
+    </div>
+  </div>
+
+  <!-- Loading State -->
+  <ui-spinner 
+    *ngIf="isLoading || isSubmitting" 
+    [message]="isLoading ? 'Loading product details...' : 'Updating product...'">
+  </ui-spinner>
+
+  <!-- Error Alert -->
+  <ui-alert 
+    *ngIf="error && !isLoading && !isSubmitting"
+    type="error"
+    [dismissible]="true"
+    [message]="error"
+    (dismissed)="clearError()">
+  </ui-alert>
+
+  <!-- Success Alert -->
+  <ui-alert 
+    *ngIf="successMessage && !isSubmitting"
+    type="success"
+    [dismissible]="true"
+    [message]="successMessage"
+    (dismissed)="clearSuccess()">
+  </ui-alert>
+
+  <!-- Product Edit Form -->
+  <div class="form-section" *ngIf="!isLoading && !isSubmitting && productForm">
+    <ui-card variant="outlined" class="form-card">
+      <div class="form-header">
+        <h2>Product Information</h2>
+        <p>Update the details for this product</p>
+      </div>
+
+      <form [formGroup]="productForm" (ngSubmit)="onSubmit()" class="product-form">
+        
+        <!-- Basic Information -->
+        <div class="form-section-group">
+          <h3 class="section-title">Basic Information</h3>
+          
+          <div class="form-row">
+            <ui-form-input
+              label="Product Name"
+              placeholder="Enter product name..."
+              [required]="true"
+              [control]="productForm.get('name')"
+              [error]="getFieldError('name')"
+              icon="inventory">
+            </ui-form-input>
+          </div>
+
+          <div class="form-row">
+            <ui-form-input
+              label="Description"
+              placeholder="Describe your product..."
+              type="textarea"
+              [rows]="4"
+              [control]="productForm.get('description')"
+              [error]="getFieldError('description')"
+              icon="description">
+            </ui-form-input>
+          </div>
+
+          <div class="form-row">
+            <ui-form-input
+              label="Category"
+              placeholder="Product category..."
+              [control]="productForm.get('category')"
+              [error]="getFieldError('category')"
+              icon="category">
+            </ui-form-input>
+          </div>
+        </div>
+
+        <!-- Pricing and Inventory -->
+        <div class="form-section-group">
+          <h3 class="section-title">Pricing & Inventory</h3>
+          
+          <div class="form-row-group">
+            <div class="form-col">
+              <ui-form-input
+                label="Price"
+                placeholder="0.00"
+                type="number"
+                [step]="0.01"
+                [min]="0"
+                [required]="true"
+                [control]="productForm.get('price')"
+                [error]="getFieldError('price')"
+                icon="attach_money">
+              </ui-form-input>
+            </div>
+            
+            <div class="form-col">
+              <ui-form-input
+                label="Stock Quantity"
+                placeholder="0"
+                type="number"
+                [min]="0"
+                [required]="true"
+                [control]="productForm.get('stock')"
+                [error]="getFieldError('stock')"
+                icon="inventory_2">
+              </ui-form-input>
+            </div>
+          </div>
+        </div>
+
+        <!-- Status Options -->
+        <div class="form-section-group">
+          <h3 class="section-title">Status Options</h3>
+          
+          <div class="form-row">
+            <label class="checkbox-label">
+              <input 
+                type="checkbox" 
+                formControlName="isActive"
+                class="checkbox-input">
+              <span class="checkbox-text">
+                Make this product active and available for sale
+              </span>
+            </label>
+          </div>
+
+          <div class="form-row">
+            <label class="checkbox-label">
+              <input 
+                type="checkbox" 
+                formControlName="trackInventory"
+                class="checkbox-input">
+              <span class="checkbox-text">
+                Track inventory levels for this product
+              </span>
+            </label>
+          </div>
+        </div>
+
+        <!-- Form Actions -->
+        <div class="form-actions">
+          <ui-button
+            type="button"
+            variant="text"
+            color="primary"
+            content="Cancel"
+            routerLink="/products"
+            [fullWidth]="false">
+          </ui-button>
+          
+          <ui-button
+            type="button"
+            variant="outlined"
+            color="warn"
+            content="Delete Product"
+            (click)="deleteProduct()"
+            [fullWidth]="false">
+          </ui-button>
+          
+          <ui-button
+            type="submit"
+            variant="raised"
+            color="primary"
+            content="Update Product"
+            [disabled]="productForm.invalid || isSubmitting"
+            [fullWidth]="false">
+          </ui-button>
+        </div>
+      </form>
+    </ui-card>
+  </div>
+</div>

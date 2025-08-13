@@ -1,0 +1,108 @@
+<div class="signin-container">
+  <div class="signin-content">
+    
+    <!-- Simple Brand Header -->
+    <div class="brand-header">
+      <div class="brand-text">
+        <h1 class="brand-name">{{ signInTitle }}</h1>
+        <p class="brand-tagline">{{ signInSubtitle }}</p>
+      </div>
+    </div>
+    <!-- Form Container (no card, match signup layout) -->
+    <div class="signin-form-container">
+
+      <!-- Loading State -->
+      <ui-spinner 
+        *ngIf="loading$ | async" 
+        [message]="loadingMessage">
+      </ui-spinner>
+
+      <!-- Error Alert -->
+      <ui-alert 
+        *ngIf="(error$ | async) && (loading$ | async) === false"
+        type="error"
+        [message]="(error$ | async)!"
+        [dismissible]="true"
+        (dismissed)="onClearAuthError()">
+      </ui-alert>
+
+      <!-- Clean Form -->
+      <form 
+        *ngIf="(loading$ | async) === false" 
+        [formGroup]="signinForm" 
+        (ngSubmit)="onSubmit()" 
+        class="signin-form">
+        
+        <div class="form-field">
+          <ui-form-input
+            [label]="emailLabel"
+            type="email"
+            [required]="true"
+            [autocomplete]="'off'"
+            [formControl]="emailControl"
+            [error]="getFieldError('email')">
+          </ui-form-input>
+        </div>
+
+        <div class="form-field">
+          <ui-form-input
+            [label]="passwordLabel"
+            type="password"
+            [required]="true"
+            [autocomplete]="'off'"
+            [formControl]="passwordControl"
+            [error]="getFieldError('password')">
+          </ui-form-input>
+        </div>
+
+        <!-- Form Options -->
+        <div class="form-options">
+          <label class="checkbox-container">
+            <input 
+              type="checkbox" 
+              formControlName="rememberMe"
+              class="checkbox-input">
+            <span class="checkbox-label">{{ rememberMeLabel }}</span>
+          </label>
+        </div>
+        
+        <div class="forgot-password-link">
+          <a 
+            routerLink="/auth/forgot-password" 
+            class="forgot-link">
+            {{ forgotPasswordLink }}
+          </a>
+        </div>
+
+        <!-- Submit Button using ui-button -->
+        <div class="signin-button">
+          <ui-button
+            [variant]="'raised'"
+            [color]="'primary'"
+            [size]="'large'"
+            [content]="signInButtonText"
+            [loading]="!!(loading$ | async)"
+            [disabled]="!!(loading$ | async)"
+            [fullWidth]="true"
+            [type]="'button'"
+            (buttonClick)="onSubmit()">
+          </ui-button>
+        </div>
+
+        <!-- Sign Up Link using ui-button -->
+        <div class="signup-link">
+          <ui-button
+            [variant]="'text'"
+            [color]="'primary'"
+            [size]="'medium'"
+            [content]="noAccountText + ' ' + createAccountText"
+            [fullWidth]="true"
+            [ariaLabel]="noAccountText + ' ' + createAccountText"
+            (buttonClick)="onSignUpClick()">
+          </ui-button>
+        </div>
+      </form>
+
+    </div>
+  </div>
+</div>

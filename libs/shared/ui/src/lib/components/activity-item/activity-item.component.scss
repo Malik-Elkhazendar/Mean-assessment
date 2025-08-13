@@ -1,0 +1,75 @@
+/* Clean activity item component */
+
+.activity-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px;
+  background: rgba(255, 255, 255, 0.5);
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  transition: all 150ms ease;
+  
+  &:hover {
+    background: rgba(248, 250, 252, 0.8);
+    border-color: #e2e8f0;
+    transform: translateX(4px);
+  }
+}
+
+.activity-icon-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  background: #e0f2fe;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.activity-icon {
+  font-size: 18px;
+  color: #0284c7;
+  
+  &.status-active {
+    color: #10b981;
+  }
+}
+
+.activity-text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  flex: 1;
+}
+
+.activity-label {
+  font-size: 0.875rem;
+  color: #6b7280;
+  font-weight: 500;
+}
+
+.activity-value {
+  font-size: 0.875rem;
+  color: #111827;
+  font-weight: 500;
+  
+  &.status-text {
+    color: #059669;
+    font-weight: 600;
+  }
+}
+
+/* Responsive adjustments */
+@media (max-width: 480px) {
+  .activity-item {
+    flex-direction: column;
+    text-align: center;
+    gap: 8px;
+  }
+  
+  .activity-text {
+    align-items: center;
+  }
+}

@@ -1,0 +1,370 @@
+<div class="product-list-container">
+
+  <!-- Page Header -->
+  <header class="page-header">
+    <div class="header-content">
+      <h1 class="page-title">{{ PRODUCT_UI_TEXT.LIST.TITLE }}</h1>
+      <p class="page-subtitle">
+        {{ PRODUCT_UI_TEXT.LIST.SUBTITLE }}
+      </p>
+    </div>
+
+    <div class="header-actions">
+      <ui-button
+        variant="raised"
+        color="primary"
+        [content]="PRODUCT_UI_TEXT.LIST.ADD_PRODUCT_BUTTON"
+        routerLink="/products/create">
+      </ui-button>
+    </div>
+  </header>
+
+  <!-- Search and Filter Controls -->
+  <section class="controls-section">
+    <ui-card variant="outlined" class="controls-card">
+      <div class="search-filters">
+        <!-- Enhanced Search -->
+        <div class="search-section">
+          <div class="search-input">
+            <ui-form-input
+              [label]="PRODUCT_UI_TEXT.LIST.SEARCH_LABEL"
+              [placeholder]="PRODUCT_UI_TEXT.LIST.SEARCH_PLACEHOLDER"
+              icon="search"
+              [value]="searchTerm"
+              (valueChange)="onSearchChange($event)">
+            </ui-form-input>
+          </div>
+          
+          <div class="sort-controls" *ngIf="products.length > 0">
+              <div class="filter-label" role="heading" aria-level="3">{{ PRODUCT_UI_TEXT.LIST.FILTERS.SORT_LABEL }}</div>
+            <div class="sort-buttons">
+              <ui-button
+                variant="stroked"
+                [color]="sortBy === 'name' ? 'primary' : 'basic'"
+                (click)="onSortChange('name')">
+                {{ PRODUCT_UI_TEXT.LIST.FILTERS.SORT_NAME }}
+                <mat-icon *ngIf="sortBy === 'name'">{{ sortOrder === 'asc' ? 'arrow_upward' : 'arrow_downward' }}</mat-icon>
+              </ui-button>
+              <ui-button
+                variant="stroked"
+                [color]="sortBy === 'price' ? 'primary' : 'basic'"
+                (click)="onSortChange('price')">
+                {{ PRODUCT_UI_TEXT.LIST.FILTERS.SORT_PRICE }}
+                <mat-icon *ngIf="sortBy === 'price'">{{ sortOrder === 'asc' ? 'arrow_upward' : 'arrow_downward' }}</mat-icon>
+              </ui-button>
+              <ui-button
+                variant="stroked"
+                [color]="sortBy === 'created' ? 'primary' : 'basic'"
+                (click)="onSortChange('created')">
+                {{ PRODUCT_UI_TEXT.LIST.FILTERS.SORT_DATE }}
+                <mat-icon *ngIf="sortBy === 'created'">{{ sortOrder === 'asc' ? 'arrow_upward' : 'arrow_downward' }}</mat-icon>
+              </ui-button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Enhanced Filters -->
+        <div class="filter-controls">
+          <div class="filter-group">
+            <div class="filter-label" role="heading" aria-level="3">{{ PRODUCT_UI_TEXT.LIST.FILTERS.STOCK_STATUS_LABEL }}</div>
+            <div class="filter-buttons">
+              <ui-button
+                variant="stroked"
+                [color]="filterStock === 'all' ? 'primary' : 'basic'"
+[content]="PRODUCT_UI_TEXT.LIST.FILTERS.ALL"
+                (click)="onFilterStockChange('all')">
+              </ui-button>
+              <ui-button
+                variant="stroked"
+                [color]="filterStock === 'inStock' ? 'success' : 'basic'"
+[content]="PRODUCT_UI_TEXT.LIST.FILTERS.IN_STOCK"
+                (click)="onFilterStockChange('inStock')">
+              </ui-button>
+              <ui-button
+                variant="stroked"
+                [color]="filterStock === 'outOfStock' ? 'warn' : 'basic'"
+[content]="PRODUCT_UI_TEXT.LIST.FILTERS.OUT_OF_STOCK"
+                (click)="onFilterStockChange('outOfStock')">
+              </ui-button>
+            </div>
+          </div>
+          
+          <div class="filter-group">
+            <div class="filter-label" role="heading" aria-level="3">{{ PRODUCT_UI_TEXT.LIST.FILTERS.VIEW_LABEL }}</div>
+            <div class="filter-buttons view-toggle">
+              <ui-button
+                variant="stroked"
+                [color]="viewMode === 'grid' ? 'primary' : 'basic'"
+                (click)="onViewModeChange('grid')">
+                <mat-icon>grid_view</mat-icon>
+              </ui-button>
+              <ui-button
+                variant="stroked"
+                [color]="viewMode === 'list' ? 'primary' : 'basic'"
+                (click)="onViewModeChange('list')">
+                <mat-icon>view_list</mat-icon>
+              </ui-button>
+            </div>
+          </div>
+          
+          <div class="filter-group">
+            <ui-button
+              variant="text"
+              color="warn"
+[content]="PRODUCT_UI_TEXT.LIST.FILTERS.CLEAR_FILTERS"
+              (click)="clearAllFilters()">
+              <mat-icon>clear</mat-icon>
+            </ui-button>
+          </div>
+        </div>
+      </div>
+    </ui-card>
+  </section>
+
+  <!-- Enhanced Loading State -->
+  <section *ngIf="isLoading" class="loading-section">
+    <!-- Loading Header -->
+    <div class="loading-header">
+      <div class="loading-title">
+        <ui-skeleton-loader variant="text" width="300px" height="2rem" animation="wave"></ui-skeleton-loader>
+      </div>
+      <div class="loading-subtitle">
+        <ui-skeleton-loader variant="text" width="200px" height="1.2rem" animation="wave"></ui-skeleton-loader>
+      </div>
+    </div>
+    
+    <!-- Loading Statistics -->
+    <div class="loading-stats">
+      <ui-stats-grid [minWidth]="'280px'" [gap]="'var(--space-6)'">
+        <ui-card *ngFor="let item of [1,2,3,4]" variant="elevated" class="loading-stat-card">
+          <div class="loading-stat-content">
+            <div class="loading-stat-header">
+              <ui-skeleton-loader variant="circular" width="40px" height="40px" animation="wave"></ui-skeleton-loader>
+              <div class="loading-stat-info">
+                <ui-skeleton-loader variant="text" width="120px" height="1.2rem" animation="wave"></ui-skeleton-loader>
+                <ui-skeleton-loader variant="text" width="80px" height="1rem" animation="wave"></ui-skeleton-loader>
+              </div>
+            </div>
+            <div class="loading-stat-value">
+              <ui-skeleton-loader variant="text" width="60px" height="2rem" animation="wave"></ui-skeleton-loader>
+            </div>
+          </div>
+        </ui-card>
+      </ui-stats-grid>
+    </div>
+    
+    <!-- Loading Controls -->
+    <div class="loading-controls">
+      <ui-card variant="outlined" class="loading-controls-card">
+        <div class="loading-search">
+          <ui-skeleton-loader variant="rectangular" width="300px" height="56px" animation="wave"></ui-skeleton-loader>
+        </div>
+        <div class="loading-filters">
+          <ui-skeleton-loader variant="rectangular" width="100px" height="36px" animation="wave"></ui-skeleton-loader>
+          <ui-skeleton-loader variant="rectangular" width="120px" height="36px" animation="wave"></ui-skeleton-loader>
+          <ui-skeleton-loader variant="rectangular" width="80px" height="36px" animation="wave"></ui-skeleton-loader>
+        </div>
+      </ui-card>
+    </div>
+    
+    <!-- Loading Products Grid -->
+    <div class="loading-products-grid">
+      <ui-card *ngFor="let item of [1,2,3,4,5,6]; let i = index"
+               variant="elevated"
+               class="loading-product-card"
+               [style.animation-delay]="(i * 0.1) + 's'">
+        <!-- Loading Image -->
+        <div class="loading-product-image">
+          <ui-skeleton-loader variant="rectangular" width="100%" height="200px" animation="wave"></ui-skeleton-loader>
+        </div>
+        
+        <!-- Loading Content -->
+        <div class="loading-product-content">
+          <div class="loading-product-meta">
+            <ui-skeleton-loader variant="text" width="80px" height="1.5rem" animation="wave"></ui-skeleton-loader>
+            <ui-skeleton-loader variant="rectangular" width="70px" height="24px" animation="wave"></ui-skeleton-loader>
+          </div>
+          
+          <div class="loading-product-details">
+            <ui-skeleton-loader variant="text" width="100%" height="1.2rem" animation="wave"></ui-skeleton-loader>
+            <ui-skeleton-loader variant="text" width="85%" height="1rem" animation="wave"></ui-skeleton-loader>
+            <ui-skeleton-loader variant="text" width="60%" height="1rem" animation="wave"></ui-skeleton-loader>
+          </div>
+          
+          <!-- Loading Actions -->
+          <div class="loading-product-actions">
+            <ui-skeleton-loader variant="rectangular" width="60px" height="32px" animation="wave"></ui-skeleton-loader>
+            <ui-skeleton-loader variant="rectangular" width="60px" height="32px" animation="wave"></ui-skeleton-loader>
+            <ui-skeleton-loader variant="rectangular" width="70px" height="32px" animation="wave"></ui-skeleton-loader>
+          </div>
+        </div>
+      </ui-card>
+    </div>
+  </section>
+
+  <!-- Error State -->
+  <ui-alert 
+    *ngIf="error && !isLoading"
+    type="error"
+    [dismissible]="true"
+    (dismiss)="clearError()">
+    {{ error }}
+  </ui-alert>
+
+  <!-- Product Grid -->
+  <section *ngIf="!isLoading && !error">
+
+    <!-- Empty State -->
+    <div class="empty-state" *ngIf="products.length === 0">
+      <ui-card variant="outlined" class="empty-card">
+        <div class="empty-content">
+          <div class="empty-icon">📦</div>
+          <h3>{{ PRODUCT_UI_TEXT.LIST.EMPTY_STATE }}</h3>
+          <p *ngIf="searchTerm">
+            {{ PRODUCT_UI_TEXT.LIST.EMPTY_STATE_SEARCH }}
+          </p>
+          <p *ngIf="!searchTerm">
+            {{ PRODUCT_UI_TEXT.LIST.EMPTY_STATE_DESCRIPTION }}
+          </p>
+          <div class="empty-actions">
+            <ui-button
+              variant="raised"
+              color="primary"
+[content]="PRODUCT_UI_TEXT.LIST.ADD_PRODUCT_BUTTON"
+              routerLink="/products/create">
+            </ui-button>
+          </div>
+        </div>
+      </ui-card>
+    </div>
+
+    <!-- Product Cards -->
+    <div class="product-cards" *ngIf="products.length > 0">
+      <ui-card
+        *ngFor="let product of products; trackBy: trackByProductId"
+        variant="elevated"
+        class="product-card"
+        [title]="product.name"
+        [description]="product.description"
+        [elevation]="1"
+        [hoverable]="true"
+        [actions]="getProductActions(product)">
+        
+        <!-- Product Image Placeholder -->
+        <div class="product-image-placeholder">
+          <mat-icon [attr.aria-label]="'Product image for ' + product.name">inventory_2</mat-icon>
+        </div>
+        
+        <div class="product-info">
+          <div class="product-meta">
+            <span class="product-price">
+              ${{ product.price | number:'1.2-2' }}
+            </span>
+            <ui-tooltip [content]="product.inStock ? 'This product is currently in stock' : 'This product is out of stock'">
+              <ui-badge 
+                [variant]="product.inStock ? 'success' : 'error'"
+                [content]="product.inStock ? product.quantity + ' in stock' : 'Out of stock'"
+                size="small">
+              </ui-badge>
+            </ui-tooltip>
+          </div>
+          
+          <div class="product-details">
+            <p><strong>Category:</strong> {{ product.category || 'Uncategorized' }}</p>
+            <p><strong>Created:</strong> {{ formatDate(product.createdAt) }}</p>
+            <p *ngIf="product.updatedAt !== product.createdAt">
+              <strong>Updated:</strong> {{ formatDate(product.updatedAt) }}
+            </p>
+          </div>
+        </div>
+      </ui-card>
+    </div>
+
+    <!-- Statistics Dashboard -->
+    <section *ngIf="products.length > 0" class="stats-section">
+      <h2 class="stats-title">Product Statistics</h2>
+      <ui-stats-grid [minWidth]="'280px'" [gap]="'var(--space-6)'">
+        <ui-card
+          *ngFor="let stat of productStats"
+          variant="elevated"
+          class="stat-card"
+          [elevation]="2">
+          <div class="stat-content">
+            <div class="stat-header">
+              <mat-icon [class]="'stat-icon stat-icon-' + stat.color">{{ stat.icon }}</mat-icon>
+              <div class="stat-info">
+                <h3 class="stat-title">{{ stat.title }}</h3>
+                <p class="stat-description">{{ stat.description }}</p>
+              </div>
+            </div>
+            <div class="stat-value">{{ stat.value }}</div>
+          </div>
+        </ui-card>
+      </ui-stats-grid>
+    </section>
+
+    <!-- Pagination -->
+    <div class="pagination-section" *ngIf="products.length > 0">
+      <ui-card variant="outlined" class="pagination-card">
+        <div class="pagination-info">
+          <p>
+            {{ PRODUCT_UI_TEXT.LIST.PAGINATION.SHOWING }} {{ (currentPage - 1) * pageSize + 1 }} - 
+            {{ Math.min(currentPage * pageSize, totalProducts) }} 
+            {{ PRODUCT_UI_TEXT.LIST.PAGINATION.OF }} {{ totalProducts }} {{ PRODUCT_UI_TEXT.LIST.PAGINATION.PRODUCTS }}
+          </p>
+        </div>
+        <div class="pagination-controls">
+          <ui-button
+            variant="stroked"
+            color="primary"
+[content]="PRODUCT_UI_TEXT.LIST.PAGINATION.PREVIOUS"
+            [disabled]="!hasPreviousPage"
+            (click)="goToPreviousPage()">
+          </ui-button>
+          
+          <span class="page-info">{{ PRODUCT_UI_TEXT.LIST.PAGINATION.PAGE }} {{ currentPage }} {{ PRODUCT_UI_TEXT.LIST.PAGINATION.OF }} {{ totalPages }}</span>
+          
+          <ui-button
+            variant="stroked"
+            color="primary"
+[content]="PRODUCT_UI_TEXT.LIST.PAGINATION.NEXT"
+            [disabled]="!hasNextPage"
+            (click)="goToNextPage()">
+          </ui-button>
+        </div>
+      </ui-card>
+    </div>
+  </section>
+
+  <!-- Delete Confirmation Modal -->
+  <ui-modal 
+    [isOpen]="showDeleteModal"
+    title="Confirm Delete"
+    size="medium"
+    [showFooter]="true"
+    (close)="closeDeleteModal()">
+    
+    <div class="delete-confirmation">
+      <p>Are you sure you want to delete the product <strong>"{{ productToDelete?.name }}"</strong>?</p>
+      <p class="warning-text">This action cannot be undone. All data related to this product will be permanently removed.</p>
+    </div>
+
+    <div slot="footer" class="modal-actions">
+      <ui-button
+        variant="text"
+        color="primary"
+        content="Cancel"
+        (click)="closeDeleteModal()">
+      </ui-button>
+      
+      <ui-button
+        variant="raised"
+        color="warn"
+        content="Delete Product"
+        (click)="confirmDelete()">
+      </ui-button>
+    </div>
+  </ui-modal>
+
+  
+</div>

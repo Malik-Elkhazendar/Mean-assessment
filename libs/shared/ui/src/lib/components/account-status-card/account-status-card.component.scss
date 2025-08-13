@@ -1,0 +1,84 @@
+.account-status-card {
+  background: var(--surface-color);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-soft);
+  border: 1px solid var(--border-color);
+  transition: var(--transition-normal);
+  
+  &:hover {
+    box-shadow: var(--shadow-hover);
+    transform: translateY(-1px);
+  }
+  
+  .card-header {
+    padding: var(--space-6) var(--space-6) var(--space-4) var(--space-6);
+    align-items: flex-start;
+    
+    .status-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: var(--radius-full);
+      background: var(--gradient-primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-right: var(--space-4);
+      
+      mat-icon {
+        color: var(--text-on-primary);
+        font-size: var(--text-2xl);
+        width: var(--text-2xl);
+        height: var(--text-2xl);
+      }
+    }
+    
+    .header-content {
+      flex: 1;
+      
+      .account-type {
+        margin: 0 0 var(--space-1) 0;
+        font-size: var(--text-xl);
+        font-weight: var(--font-semibold);
+        color: var(--text-primary);
+        line-height: var(--leading-normal);
+      }
+      
+      .account-status {
+        margin: 0;
+        font-size: var(--text-sm);
+        color: var(--success-color);
+        font-weight: var(--font-medium);
+      }
+    }
+  }
+  
+  .card-content {
+    padding: 0 var(--space-6) var(--space-6) var(--space-6);
+    
+    .account-info {
+      .info-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: var(--space-2) 0;
+        border-bottom: 1px solid var(--divider-color);
+        
+        &:last-child {
+          border-bottom: none;
+        }
+        
+        .label {
+          font-size: var(--text-sm);
+          color: var(--text-secondary);
+          font-weight: var(--font-medium);
+        }
+        
+        .value {
+          font-size: var(--text-sm);
+          color: var(--text-primary);
+          font-weight: var(--font-regular);
+        }
+      }
+    }
+  }
+}

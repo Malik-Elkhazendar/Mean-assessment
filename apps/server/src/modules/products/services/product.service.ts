@@ -6,7 +6,7 @@ import { WinstonLoggerService } from '../../../core/logger/winston-logger.servic
 import { Product } from '@mean-assessment/data-models';
 import { CreateProductDto, UpdateProductDto, ProductQueryDto } from '@mean-assessment/dto';
 import { isValidObjectId } from '@mean-assessment/validation';
-import { ERROR_MESSAGES } from '@mean-assessment/constants';
+import { ERROR_MESSAGES, SUCCESS_MESSAGES } from '@mean-assessment/constants';
 import { ProductListResponse, ProductResponse, ProductOperationResponse } from '../interfaces/product-request.interface';
 
 /**
@@ -52,7 +52,7 @@ export class ProductService {
 
       return {
         product: result,
-        message: 'Product created successfully',
+        message: SUCCESS_MESSAGES.PRODUCT.CREATE_SUCCESS,
         timestamp: new Date().toISOString(),
       };
     } catch (error) {

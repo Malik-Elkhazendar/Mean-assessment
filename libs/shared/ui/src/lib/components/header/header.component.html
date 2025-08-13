@@ -1,0 +1,177 @@
+<mat-toolbar [color]="variant !== 'basic' ? variant : null" [class]="getHeaderClasses()">
+  <!-- Mobile Menu Button -->
+  <button 
+    *ngIf="showMobileMenu"
+    mat-icon-button
+    class="mobile-menu-button hover-glow"
+    (click)="onMobileMenuClick()"
+    aria-label="Toggle navigation menu">
+    <mat-icon fontSet="material-icons" fontIcon="menu"></mat-icon>
+  </button>
+
+  <!-- Logo/Brand Section -->
+  <div class="header-brand" [routerLink]="brandLink" [class.clickable]="!!brandLink">
+    <div class="brand-logo-container">
+      <img 
+        *ngIf="brandImage" 
+        [src]="brandImage" 
+        [alt]="brandText || 'Logo'"
+        class="brand-image">
+      <div *ngIf="brandIcon && !brandImage && !brandImage" class="brand-icon-wrapper">
+        <svg class="brand-svg" width="40" height="40" viewBox="0 0 40 40" fill="none">
+          <rect width="40" height="40" rx="8" fill="url(#brandGradient)" />
+          <path d="M12 20L18 26L28 14" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          <defs>
+            <linearGradient id="brandGradient" x1="0" y1="0" x2="40" y2="40">
+              <stop stop-color="var(--primary-500)" />
+              <stop offset="1" stop-color="var(--primary-700)" />
+            </linearGradient>
+          </defs>
+        </svg>
+      </div>
+    </div>
+    <div *ngIf="brandText" class="brand-text-container">
+      <h1 class="brand-text">{{ brandText }}</h1>
+    </div>
+  </div>
+
+  <!-- Navigation Links (Desktop) -->
+  <nav *ngIf="navigationItems && navigationItems.length > 0" class="header-navigation desktop-only">
+    <ng-container *ngFor="let item of navigationItems">
+      <a 
+        *ngIf="!item.children"
+        [routerLink]="item.route"
+        [routerLinkActive]="'active'"
+        [routerLinkActiveOptions]="{ exact: item.exact || false }"
+        mat-button
+        class="nav-item nav-link">
+        <mat-icon *ngIf="item.icon" class="nav-icon" fontSet="material-icons" [fontIcon]="item.icon"></mat-icon>
+        <span>{{ item.label }}</span>
+      </a>
+      
+      <!-- Dropdown Menu -->
+      <div *ngIf="item.children && item.children.length > 0" class="nav-dropdown">
+        <button 
+          mat-button 
+          [matMenuTriggerFor]="dropdownMenu"
+          class="nav-item nav-dropdown-trigger">
+          <mat-icon *ngIf="item.icon" class="nav-icon" fontSet="material-icons" [fontIcon]="item.icon"></mat-icon>
+          <span>{{ item.label }}</span>
+          <mat-icon class="dropdown-arrow" fontSet="material-icons" fontIcon="keyboard_arrow_down"></mat-icon>
+        </button>
+        
+        <mat-menu #dropdownMenu="matMenu" class="nav-dropdown-menu">
+          <a 
+            *ngFor="let child of item.children"
+            [routerLink]="child.route"
+            mat-menu-item
+            class="nav-dropdown-item">
+            <mat-icon *ngIf="child.icon" fontSet="material-icons" [fontIcon]="child.icon"></mat-icon>
+            <span>{{ child.label }}</span>
+          </a>
+        </mat-menu>
+      </div>
+    </ng-container>
+  </nav>
+
+  <!-- Spacer -->
+  <span class="header-spacer"></span>
+
+  <!-- Search (if enabled) -->
+  <div *ngIf="showSearch" class="header-search desktop-only">
+    <button 
+      mat-icon-button
+      class="search-button hover-glow"
+      (click)="onSearchClick()"
+      aria-label="Search">
+      <mat-icon fontSet="material-icons" fontIcon="search"></mat-icon>
+    </button>
+  </div>
+
+  <!-- Notifications removed for clarity -->
+
+  <!-- User Menu -->
+  <div *ngIf="user" class="header-user-menu">
+    <button 
+      type="button"
+      [matMenuTriggerFor]="userMenu"
+      class="user-menu-trigger">
+      <div class="user-avatar-container">
+        <img 
+          *ngIf="user.avatar" 
+          [src]="user.avatar" 
+          [alt]="user.name"
+          class="user-avatar">
+        <div 
+          *ngIf="!user.avatar"
+          class="user-avatar-placeholder">
+          {{ getUserInitials() }}
+        </div>
+      </div>
+      <div class="user-info desktop-only">
+        <span class="user-name">{{ user.name }}</span>
+        <span class="user-role">{{ userRole || 'Member' }}</span>
+      </div>
+      <mat-icon class="user-menu-arrow" fontSet="material-icons" fontIcon="keyboard_arrow_down"></mat-icon>
+    </button>
+    
+    <mat-menu #userMenu="matMenu" class="user-dropdown-menu">
+      <div class="user-menu-header">
+        <div class="user-menu-avatar">
+          <img 
+            *ngIf="user.avatar" 
+            [src]="user.avatar" 
+            [alt]="user.name"
+            class="user-menu-avatar-img">
+          <div 
+            *ngIf="!user.avatar"
+            class="user-menu-avatar-placeholder">
+            {{ getUserInitials() }}
+          </div>
+        </div>
+        <div class="user-menu-info">
+          <div class="user-menu-name">{{ user.name }}</div>
+          <div class="user-menu-email">{{ user.email }}</div>
+        </div>
+      </div>
+      
+      <mat-divider></mat-divider>
+      
+      <a 
+        *ngFor="let item of userMenuItems"
+        [routerLink]="item.route"
+        mat-menu-item
+        class="user-menu-item">
+        <mat-icon *ngIf="item.icon" class="user-menu-item-icon" fontSet="material-icons" [fontIcon]="item.icon"></mat-icon>
+        <span>{{ item.label }}</span>
+      </a>
+      
+      <mat-divider *ngIf="userMenuItems && userMenuItems.length > 0"></mat-divider>
+      
+      <button 
+        mat-menu-item
+        class="user-menu-item logout-item"
+        (click)="onLogoutClick()">
+        <mat-icon class="user-menu-item-icon" fontSet="material-icons" fontIcon="logout"></mat-icon>
+        <span>{{ signOutText }}</span>
+      </button>
+    </mat-menu>
+  </div>
+
+  <!-- Action Buttons -->
+  <div *ngIf="actionButtons && actionButtons.length > 0" class="header-actions">
+    <button 
+      *ngFor="let action of actionButtons"
+      [attr.mat-button]="action.variant === 'text' ? '' : null"
+      [attr.mat-raised-button]="action.variant === 'raised' ? '' : null"
+      [attr.mat-stroked-button]="action.variant === 'outlined' ? '' : null"
+      [attr.mat-icon-button]="action.variant === 'icon' ? '' : null"
+      [attr.color]="action.color"
+      [disabled]="action.disabled"
+      class="action-button hover-lift"
+      (click)="onActionClick(action)">
+      <mat-icon *ngIf="action.icon" fontSet="material-icons" [fontIcon]="action.icon"></mat-icon>
+      <span *ngIf="action.variant !== 'icon'">{{ action.label }}</span>
+    </button>
+  </div>
+</mat-toolbar>

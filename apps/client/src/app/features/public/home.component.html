@@ -1,0 +1,182 @@
+<div class="home-container">
+  <!-- Hero Section -->
+  <section class="hero-section">
+    <div class="hero-content">
+      <h1 class="hero-title">Welcome to {{ appName }}</h1>
+      <p class="hero-subtitle">
+        Your complete product management solution powered by modern MEAN stack architecture. 
+        Experience seamless authentication, powerful CRUD operations, and beautiful Material Design.
+      </p>
+      
+      <!-- Authentication-aware CTAs -->
+      <div class="hero-actions" *ngIf="(isAuthenticated$ | async) === false">
+        <ui-button
+          variant="raised"
+          color="primary"
+          size="large"
+          content="Get Started"
+          routerLink="/auth/signup"
+          [fullWidth]="false">
+        </ui-button>
+        
+        <ui-button
+          variant="stroked"
+          color="primary"
+          size="large"
+          content="Sign In"
+          routerLink="/auth/login"
+          [fullWidth]="false">
+        </ui-button>
+      </div>
+
+      <!-- Authenticated user greeting -->
+      <div class="hero-actions" *ngIf="isAuthenticated$ | async">
+        <p class="welcome-message">
+          Welcome back, {{ (user$ | async)?.firstName }}!
+        </p>
+        <ui-button
+          variant="raised"
+          color="primary"
+          size="large"
+          content="Go to Dashboard"
+          routerLink="/dashboard"
+          [fullWidth]="false">
+        </ui-button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Features Section -->
+  <section class="features-section">
+    <div class="container">
+      <h2 class="section-title">Key Features</h2>
+      <div class="features-grid">
+        
+        <ui-card
+          variant="elevated"
+          title="Secure Authentication"
+          description="8-hour JWT sessions with complete signup/signin flow, password reset via email, and protected route management."
+          avatar="lock"
+          avatarType="icon"
+          [elevation]="2">
+        </ui-card>
+
+        <ui-card
+          variant="elevated"
+          title="Smart Product Catalog"
+          description="Create, manage, and organize your products with advanced search, category filters, and real-time inventory tracking."
+          avatar="inventory_2"
+          avatarType="icon"
+          [elevation]="2">
+        </ui-card>
+
+        <ui-card
+          variant="elevated"
+          title="Real-time Dashboard"
+          description="Monitor your products with live statistics, inventory insights, and personalized activity tracking."
+          avatar="dashboard"
+          avatarType="icon"
+          [elevation]="2">
+        </ui-card>
+
+        <ui-card
+          variant="elevated"
+          title="NgRx State Management"
+          description="Predictable application state with time-travel debugging, async effects, and seamless data flow."
+          avatar="account_tree"
+          avatarType="icon"
+          [elevation]="2">
+        </ui-card>
+
+        <ui-card
+          variant="elevated"
+          title="Beautiful Material UI"
+          description="Professional design system with responsive layout, accessibility features, and smooth animations."
+          avatar="palette"
+          avatarType="icon"
+          [elevation]="2">
+        </ui-card>
+
+        <ui-card
+          variant="elevated"
+          title="Enterprise Quality"
+          description="Production-ready code with comprehensive testing, TypeScript strict mode, and professional documentation."
+          avatar="verified_user"
+          avatarType="icon"
+          [elevation]="2">
+        </ui-card>
+      </div>
+    </div>
+  </section>
+
+  <!-- Tech Stack Section -->
+  <section class="tech-stack-section">
+    <div class="container">
+      <h2 class="section-title">Built With Modern Technologies</h2>
+      <div class="tech-grid">
+        <div class="tech-item">
+          <mat-icon class="tech-icon">web</mat-icon>
+          <h3>Frontend Excellence</h3>
+          <ul>
+            <li>Angular 20+ with Standalone Components</li>
+            <li>NgRx for Predictable State Management</li>
+            <li>Material Design 3 Implementation</li>
+            <li>RxJS Reactive Programming</li>
+            <li>TypeScript with Strict Mode</li>
+          </ul>
+        </div>
+        
+        <div class="tech-item">
+          <mat-icon class="tech-icon">dns</mat-icon>
+          <h3>Backend Power</h3>
+          <ul>
+            <li>NestJS Professional Framework</li>
+            <li>MongoDB Atlas Cloud Database</li>
+            <li>JWT Authentication & Security</li>
+            <li>Swagger OpenAPI Documentation</li>
+            <li>Winston Structured Logging</li>
+          </ul>
+        </div>
+        
+        <div class="tech-item">
+          <mat-icon class="tech-icon">build</mat-icon>
+          <h3>Development Tools</h3>
+          <ul>
+            <li>Nx Monorepo Architecture</li>
+            <li>Jest Comprehensive Testing</li>
+            <li>ESLint & Prettier Code Quality</li>
+            <li>Docker Production Ready</li>
+            <li>GitHub Actions CI/CD</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA Section -->
+  <section class="cta-section" *ngIf="(isAuthenticated$ | async) === false">
+    <div class="container">
+      <div class="cta-content">
+        <h2>Ready to Experience Modern Web Development?</h2>
+        <p>Join thousands of developers who trust our platform for product management. Start building your inventory today with enterprise-grade tools.</p>
+        <div class="cta-actions">
+          <ui-button
+            variant="raised"
+            color="primary"
+            size="large"
+            content="Sign Up Now"
+            routerLink="/auth/signup">
+          </ui-button>
+          
+          <ui-button
+            variant="stroked"
+            color="primary"
+            size="large"
+            content="Learn More"
+            routerLink="/about">
+          </ui-button>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>

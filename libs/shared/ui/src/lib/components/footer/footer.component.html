@@ -1,0 +1,18 @@
+<footer class="app-footer">
+  <div class="footer-content">
+    <!-- Copyright -->
+    <div class="copyright">
+      <span>© {{ footerConfig.COPYRIGHT_YEAR }} {{ footerConfig.COMPANY_NAME }}</span>
+      <span class="tagline">{{ footerConfig.TAGLINE }}</span>
+    </div>
+    
+    <!-- Tech Stack -->
+    <div class="tech-stack">
+      <span 
+        *ngFor="let tech of footerConfig.TECH_STACK; trackBy: trackByTech"
+        class="tech-badge">
+        {{ tech }}
+      </span>
+    </div>
+  </div>
+</footer>

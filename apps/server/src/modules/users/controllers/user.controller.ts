@@ -11,6 +11,7 @@ import {
   Request,
   ValidationPipe,
   UseGuards,
+  NotFoundException,
 } from '@nestjs/common';
 import { 
   ApiTags, 
@@ -23,7 +24,6 @@ import {
 import { UserService } from '../services/user.service';
 import { User } from '@mean-assessment/data-models';
 import { UpdateUserDto } from '@mean-assessment/dto';
-import { API_ROUTES } from '@mean-assessment/constants';
 import { AppRequest, AuthenticatedRequest } from '../interfaces/request.interface';
 import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard';
 import { 
@@ -33,7 +33,8 @@ import {
 } from '../../../common/dto/swagger/response.dto';
 
 @ApiTags('Users')
-@Controller(API_ROUTES.USERS.BASE)
+// Use relative path; global prefix 'api' is applied in main.ts
+@Controller('users')
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
@@ -80,6 +81,10 @@ export class UserController {
     @Request() req: AuthenticatedRequest,
   ): Promise<{ user: User }> {
     const user = await this.userService.findById(id, req.correlationId);
+    if (!user) {
+      // Return 404 when user not found
+      throw new NotFoundException('User not found');
+    }
     return { user };
   }
 
@@ -219,6 +224,8 @@ export class UserController {
   /**
    * DELETE /users/:id - Deactivate user account
    */
+  @ApiBearerAuth('JWT-auth')
+  @UseGuards(JwtAuthGuard)
   @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
   async delete(
@@ -396,6 +403,8 @@ export class UserController {
     description: 'Internal server error',
     type: ErrorResponseDto
   })
+  @ApiBearerAuth('JWT-auth')
+  @UseGuards(JwtAuthGuard)
   @Get('admin/stats')
   async getUserStats(@Request() req: AppRequest): Promise<{
     totalUsers: number;

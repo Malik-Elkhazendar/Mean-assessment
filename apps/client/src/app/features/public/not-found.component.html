@@ -1,0 +1,65 @@
+<div class="not-found-container">
+  <div class="error-content">
+    <div class="error-visual">
+      <div class="error-code">404</div>
+      <div class="error-icon">🔍</div>
+    </div>
+    
+    <div class="error-message">
+      <h1 class="error-title">Page Not Found</h1>
+      <p class="error-description">
+        The page you're looking for doesn't exist or has been moved.
+        Don't worry, let's get you back on track.
+      </p>
+    </div>
+    
+    <div class="error-actions">
+      <ui-button
+        variant="raised"
+        color="primary"
+        content="Go Home"
+        routerLink="/"
+        icon="home"
+        [fullWidth]="false">
+      </ui-button>
+      
+      <ui-button
+        variant="stroked"
+        color="primary"
+        content="Go Back"
+        (click)="goBack()"
+        icon="arrow_back"
+        [fullWidth]="false">
+      </ui-button>
+      
+      <ui-button
+        variant="text"
+        color="primary"
+        content="View Products"
+        routerLink="/products"
+        icon="inventory"
+        [fullWidth]="false">
+      </ui-button>
+    </div>
+    
+    <!-- Helpful Links -->
+    <div class="helpful-links">
+      <ui-card variant="outlined" title="Quick Links" class="links-card">
+        <div class="link-grid">
+          <a routerLink="/about" class="help-link">
+            <span class="link-icon">ℹ️</span>
+            About This App
+          </a>
+          <a routerLink="/auth/login" class="help-link">
+            <span class="link-icon">🔐</span>
+            Sign In
+          </a>
+          <a routerLink="/auth/signup" class="help-link">
+            <span class="link-icon">✨</span>
+            Create Account
+          </a>
+        </div>
+      </ui-card>
+    </div>
+  </div>
+</div>

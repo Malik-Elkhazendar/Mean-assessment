@@ -1,0 +1,442 @@
+/* Professional Sign In Page - Mobile-First Responsive Design */
+
+.signin-container {
+  min-height: 100vh;
+  width: 100%;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: var(--space-8) var(--space-4);
+  background: var(--background-color);
+  position: relative;
+  box-sizing: border-box;
+  padding-top: calc(68px + var(--space-6));
+  overflow-y: auto;
+  
+  /* Mobile adjustments */
+  @media (max-width: 768px) {
+    padding: var(--space-6) var(--space-3);
+    padding-top: calc(60px + var(--space-5));
+    min-height: 100vh;
+  }
+  
+  @media (max-width: 480px) {
+    padding: var(--space-4) var(--space-2);
+    padding-top: calc(56px + var(--space-4));
+    min-height: 100vh;
+  }
+}
+
+.signin-content {
+  width: 100%;
+  max-width: 512px;
+  position: relative;
+  z-index: 1;
+  
+  @media (max-width: 768px) {
+    max-width: 100%;
+    padding: 0 var(--space-2);
+  }
+}
+
+/* Mobile-First Brand Header */
+.brand-header {
+  text-align: center;
+  margin-bottom: var(--space-5);
+  
+  .brand-text {
+    .brand-name {
+      font-size: var(--text-2xl);
+      font-weight: 700;
+      color: var(--text-primary);
+      margin: 0;
+      letter-spacing: -0.015em;
+      line-height: 1.2;
+      
+      @media (max-width: 768px) {
+        font-size: var(--text-xl);
+      }
+      
+      @media (max-width: 480px) {
+        font-size: var(--text-lg);
+      }
+    }
+    
+    .brand-tagline {
+      font-size: var(--text-base);
+      color: var(--text-primary);
+      margin: var(--space-1) 0 0 0;
+      font-weight: 400;
+      line-height: 1.5;
+      
+      @media (max-width: 768px) {
+        font-size: var(--text-sm);
+      }
+      
+      @media (max-width: 480px) {
+        font-size: var(--text-xs);
+      }
+    }
+  }
+}
+
+/* Mobile-Optimized Card Component */
+.signin-card {
+  width: 100%;
+  max-width: 560px;
+  
+  ::ng-deep .mat-mdc-card {
+    background: rgba(255, 255, 255, 0.9);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: var(--radius-lg);
+    padding: var(--space-8);
+    box-shadow: var(--elevation-4);
+    width: 100%;
+    max-width: 560px;
+    box-sizing: border-box;
+    margin: 0 auto;
+    
+    @media (max-width: 768px) {
+      padding: var(--space-6);
+      border-radius: var(--radius);
+    }
+    
+    @media (max-width: 480px) {
+      padding: var(--space-4);
+      background: rgba(255, 255, 255, 0.95);
+      border-radius: var(--radius);
+      max-width: 100%;
+    }
+  }
+}
+
+/* Match signup's no-card container */
+.signin-form-container {
+  background: transparent;
+  padding: 0;
+}
+
+/* Mobile-First Form Styling */
+.signin-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  width: 100%;
+  margin: 0 auto;
+  
+  .form-field {
+    margin-bottom: var(--space-2);
+    
+    ::ng-deep .mat-mdc-form-field {
+      width: 100%;
+      
+      .mat-mdc-text-field-wrapper {
+        border-radius: var(--radius-lg);
+        background: var(--background-color);
+        border: 1px solid var(--border-color);
+        min-height: 56px;
+        overflow: visible; // ensure suffix icons show
+        
+        @media (max-width: 768px) {
+          min-height: 60px; // Larger touch target on mobile
+        }
+        
+        @media (max-width: 480px) {
+          min-height: 64px; // Even larger on small screens
+        }
+        
+        &:hover {
+          border-color: var(--border-color);
+        }
+        
+        &.mdc-text-field--focused {
+          border-color: var(--border-color);
+          box-shadow: 0 0 0 2px rgba(230, 224, 209, 0.3);
+        }
+      }
+      
+      .mat-mdc-form-field-input-control {
+        color: var(--text-primary);
+        font-size: 16px; // Prevent zoom on mobile
+        font-weight: 400;
+        line-height: 1.5;
+        padding: var(--space-4);
+        
+        @media (max-width: 768px) {
+          padding: var(--space-4) var(--space-5);
+        }
+        
+        &::placeholder {
+          color: var(--text-secondary);
+          opacity: 0.7;
+        }
+      }
+      
+      .mat-mdc-floating-label {
+        color: var(--text-primary);
+        font-size: 16px;
+        font-weight: 500;
+        
+        &.mdc-floating-label--float-above {
+          color: var(--text-primary);
+          font-size: 14px;
+        }
+      }
+      
+      .mat-mdc-form-field-error-wrapper {
+        padding: var(--space-1) var(--space-4) 0;
+        
+        .mat-mdc-form-field-error {
+          color: var(--error-color);
+          font-size: var(--text-sm);
+          line-height: 1.4;
+        }
+      }
+    }
+  }
+}
+
+.form-options {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  margin: var(--space-3) 0;
+  min-height: 48px;
+  padding: var(--space-2) 0;
+  
+  @media (max-width: 768px) {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-3);
+    padding: var(--space-4);
+    min-height: auto;
+  }
+}
+
+/* Mobile-First Checkbox Styling */
+.checkbox-container {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  cursor: pointer;
+  user-select: none;
+  min-height: 44px;
+  padding: var(--space-2);
+  
+  @media (max-width: 768px) {
+    min-height: 48px;
+    padding: var(--space-3);
+    width: 100%;
+  }
+  
+  .checkbox-input {
+    width: 20px;
+    height: 20px;
+    border-radius: var(--radius-sm);
+    border: 2px solid var(--border-color);
+    background: transparent;
+    appearance: none;
+    position: relative;
+    cursor: pointer;
+    
+    @media (max-width: 768px) {
+      width: 24px;
+      height: 24px;
+    }
+    
+    &:checked {
+      background: var(--primary-color);
+      border-color: var(--primary-color);
+      
+      &::after {
+        content: '✓';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        color: var(--text-primary);
+        font-size: 12px;
+        font-weight: bold;
+        
+        @media (max-width: 768px) {
+          font-size: 14px;
+        }
+      }
+    }
+    
+    &:focus {
+      outline: 2px solid rgba(223, 172, 32, 0.3);
+      outline-offset: 2px;
+    }
+  }
+  
+  .checkbox-label {
+    font-size: var(--text-sm);
+    color: var(--text-primary);
+    line-height: 1.5;
+    font-weight: 400;
+    flex: 1;
+    
+    @media (max-width: 768px) {
+      font-size: var(--text-base);
+    }
+  }
+}
+
+.forgot-password-link {
+  text-align: center;
+  margin-bottom: var(--space-3);
+  padding: var(--space-2) 0;
+  
+  @media (max-width: 768px) {
+    padding: var(--space-3);
+    width: 100%;
+  }
+  
+  .forgot-link {
+    font-size: var(--text-sm);
+    color: var(--text-primary);
+    text-decoration: underline;
+    font-weight: 400;
+    cursor: pointer;
+    opacity: 0.8;
+    transition: opacity var(--transition-fast);
+    
+    &:hover {
+      opacity: 1;
+    }
+  }
+}
+
+/* Mobile-First Button Styling */
+.signin-button {
+  margin: var(--space-5) 0 var(--space-4) 0;
+  
+  ::ng-deep ui-button button {
+    min-height: 48px;
+    background: var(--primary-color) !important;
+    color: var(--text-primary) !important;
+    font-size: 16px;
+    font-weight: 700;
+    letter-spacing: 0.015em;
+    border-radius: var(--radius-lg);
+    border: none;
+    
+    @media (max-width: 768px) {
+      min-height: 52px;
+      font-size: var(--text-base);
+    }
+    
+    @media (max-width: 480px) {
+      min-height: 56px;
+    }
+    
+    &:hover:not(:disabled) {
+      background: var(--primary-dark) !important;
+    }
+  }
+}
+
+/* Sign Up Link */
+.signup-link {
+  text-align: center;
+  margin-top: var(--space-3);
+  
+  ::ng-deep ui-button button {
+    background: var(--surface-hover) !important;
+    color: var(--text-primary) !important;
+    font-size: var(--text-sm);
+    font-weight: 700;
+    border-radius: var(--radius-lg);
+    border: none;
+    min-height: 48px;
+    
+    @media (max-width: 768px) {
+      min-height: 52px;
+      font-size: var(--text-base);
+    }
+    
+    &:hover:not(:disabled) {
+      background: var(--surface-selected) !important;
+    }
+  }
+}
+
+/* Demo Credentials Section */
+.demo-section {
+  margin-top: 32px;
+  padding-top: 24px;
+  border-top: 1px solid var(--divider-color);
+  
+  .demo-card {
+    background: var(--primary-50);
+    border: 1px solid var(--primary-200);
+    border-radius: var(--radius);
+    padding: 16px;
+    
+    .demo-title {
+      font-size: 0.875rem;
+      font-weight: 600;
+      color: var(--primary-800);
+      margin: 0 0 12px 0;
+    }
+    
+    .demo-credentials {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    
+    .demo-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      
+      .demo-label {
+        font-size: 0.75rem;
+        color: var(--text-secondary);
+        font-weight: 500;
+      }
+      
+      .demo-value {
+        font-size: 0.75rem;
+        font-family: var(--font-mono);
+        background: rgba(255, 255, 255, 0.7);
+        padding: 2px 6px;
+        border-radius: 4px;
+        color: var(--text-primary);
+      }
+    }
+  }
+}
+
+/* Touch Device Optimizations */
+@media (hover: none) and (pointer: coarse) {
+  .signin-button,
+  .signup-link {
+    ::ng-deep ui-button button {
+      &:active:not(:disabled) {
+        transform: scale(0.98);
+        transition: transform 0.1s ease;
+      }
+    }
+  }
+  
+  .forgot-link {
+    &:active {
+      opacity: 0.6;
+      transition: opacity 0.1s ease;
+    }
+  }
+}
+
+/* Reduced Motion Support */
+@media (prefers-reduced-motion: reduce) {
+  .signin-card ::ng-deep .mat-mdc-card,
+  .signin-button ::ng-deep ui-button button,
+  .signup-link ::ng-deep ui-button button,
+  .forgot-link {
+    transition: none !important;
+  }
+}

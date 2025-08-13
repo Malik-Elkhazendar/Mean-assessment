@@ -8,7 +8,13 @@
   "exclude": [
     "jest.config.ts",
     "src/test-setup.ts",
+    "src/jest-setup.ts",
     "src/**/*.test.ts",
-    "src/**/*.spec.ts"
+    "src/**/*.spec.ts",
+    "src/app/nx-welcome.ts",
+    "src/environments/environment.ts",
+    "src/environments/environment.prod.ts",
+    "src/app/features/auth/auth.routes.ts",
+    "src/app/features/dashboard/dashboard.routes.ts"
   ]
 }

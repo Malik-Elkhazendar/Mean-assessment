@@ -1,0 +1,32 @@
+<mat-card class="account-status-card">
+  <mat-card-header class="card-header">
+    <div class="status-icon">
+      <mat-icon>account_circle</mat-icon>
+    </div>
+    <div class="header-content">
+      <h3 class="account-type">{{ accountType || 'Standard Account' }}</h3>
+      <p class="account-status">{{ status || 'Active' }}</p>
+    </div>
+  </mat-card-header>
+  
+  <mat-card-content class="card-content">
+    <div class="account-info">
+      <div class="info-item">
+        <span class="label">Name:</span>
+        <span class="value">{{ name || 'John Doe' }}</span>
+      </div>
+      <div class="info-item">
+        <span class="label">Email:</span>
+        <span class="value">{{ email || 'user@example.com' }}</span>
+      </div>
+      <div class="info-item">
+        <span class="label">Member Since:</span>
+        <span class="value">{{ formatDate(memberSince) }}</span>
+      </div>
+      <div class="info-item" *ngIf="sessionExpiresIn">
+        <span class="label">Session Expires In:</span>
+        <span class="value">{{ sessionExpiresIn }}</span>
+      </div>
+    </div>
+  </mat-card-content>
+</mat-card>

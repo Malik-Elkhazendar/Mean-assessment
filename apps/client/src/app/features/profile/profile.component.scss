@@ -1,0 +1,25 @@
+// Profile component styles
+.profile-container {
+  min-height: calc(100vh - 68px);
+  background: var(--background-color);
+  padding: var(--space-6);
+}
+
+.container {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.text-center {
+  text-align: center;
+}
+
+.mb-4 {
+  margin-bottom: var(--space-6);
+}
+
+.profile-actions {
+  display: flex;
+  justify-content: center;
+  margin-top: var(--space-8);
+}

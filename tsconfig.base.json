@@ -15,14 +15,18 @@
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "paths": {
+      "@mean-assessment/auth": ["libs/shared/auth/src/index.ts"],
       "@mean-assessment/constants": ["libs/shared/constants/src/index.ts"],
       "@mean-assessment/data-models": ["libs/shared/data-models/src/index.ts"],
       "@mean-assessment/dto": ["libs/shared/dto/src/index.ts"],
       "@mean-assessment/logger": ["libs/shared/logger/src/index.ts"],
+      "@mean-assessment/env": ["apps/client/src/environments/environment.ts"],
       "@mean-assessment/shared/data-models": ["shared/src/index.ts"],
+      "@mean-assessment/shared/ui": ["libs/shared/ui/src/index.ts"],
       "@mean-assessment/ui": ["libs/shared/ui/src/index.ts"],
       "@mean-assessment/utils": ["libs/shared/utils/src/index.ts"],
-      "@mean-assessment/validation": ["libs/shared/validation/src/index.ts"]
+      "@mean-assessment/validation": ["libs/shared/validation/src/index.ts"],
+      "@mean-assessment/products-state": ["libs/shared/products-state/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]

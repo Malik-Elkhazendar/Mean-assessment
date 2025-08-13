@@ -11,6 +11,8 @@ import { AuthModule } from '../modules/auth/auth.module';
 import { ProductModule } from '../modules/products/product.module';
 import { appConfig, databaseConfig, authConfig, emailConfig, throttlerConfig, corsConfig, swaggerConfig } from '../config';
 
+const isTestEnv = process.env.NODE_ENV === 'test';
+
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -18,17 +20,21 @@ import { appConfig, databaseConfig, authConfig, emailConfig, throttlerConfig, co
       load: [appConfig, databaseConfig, authConfig, emailConfig, throttlerConfig, corsConfig, swaggerConfig],
       envFilePath: ['.env.local', '.env'],
     }),
-    // Global throttling/rate limiting
-    ThrottlerModule.forRootAsync({
-      imports: [ConfigModule],
-      inject: [ConfigService],
-      useFactory: async (configService: ConfigService) => ({
-        throttlers: [{
-          ttl: configService.get<number>('throttler.global.ttl'),
-          limit: configService.get<number>('throttler.global.limit'),
-        }],
-      }),
-    }),
+    // Global throttling/rate limiting (disabled in test environment)
+    ...(isTestEnv
+      ? []
+      : [
+          ThrottlerModule.forRootAsync({
+            imports: [ConfigModule],
+            inject: [ConfigService],
+            useFactory: async (configService: ConfigService) => ({
+              throttlers: [{
+                ttl: configService.get<number>('throttler.global.ttl'),
+                limit: configService.get<number>('throttler.global.limit'),
+              }],
+            }),
+          }),
+        ]),
     CoreModule,
     DatabaseModule,
     UserModule,
@@ -38,11 +44,15 @@ import { appConfig, databaseConfig, authConfig, emailConfig, throttlerConfig, co
   controllers: [AppController],
   providers: [
     AppService,
-    // Global throttling guard
-    {
-      provide: APP_GUARD,
-      useClass: ThrottlerGuard,
-    },
+    // Global throttling guard (disabled in test environment)
+    ...(!isTestEnv
+      ? [
+          {
+            provide: APP_GUARD,
+            useClass: ThrottlerGuard,
+          },
+        ]
+      : []),
   ],
 })
 export class AppModule {}

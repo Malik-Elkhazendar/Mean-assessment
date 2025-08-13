@@ -1,0 +1,88 @@
+<ng-container *ngIf="loading; else content">
+  
+  <!-- Repeat skeleton items based on count -->
+  <div *ngFor="let item of getCountArray()" class="skeleton-item">
+    
+    <!-- Text Skeleton -->
+    <div *ngIf="variant === 'text'" class="skeleton-text-container">
+      <div
+        *ngFor="let line of getLinesArray(); let last = last"
+        [class]="getSkeletonClasses()"
+        [style]="getSkeletonStyles()"
+        [class.skeleton-text-last]="last && lines > 1">
+      </div>
+    </div>
+    
+    <!-- Card Skeleton -->
+    <div *ngIf="variant === 'card'" class="skeleton-card">
+      <div class="skeleton-card-header">
+        <div class="skeleton skeleton-avatar skeleton-pulse"></div>
+        <div class="skeleton-card-header-content">
+          <div class="skeleton skeleton-text skeleton-pulse skeleton-title"></div>
+          <div class="skeleton skeleton-text skeleton-pulse skeleton-subtitle"></div>
+        </div>
+      </div>
+      <div class="skeleton skeleton-rectangular skeleton-pulse skeleton-card-image"></div>
+      <div class="skeleton-card-content">
+        <div class="skeleton skeleton-text skeleton-pulse"></div>
+        <div class="skeleton skeleton-text skeleton-pulse"></div>
+        <div class="skeleton skeleton-text skeleton-pulse skeleton-text-last"></div>
+      </div>
+      <div class="skeleton-card-actions">
+        <div class="skeleton skeleton-button skeleton-pulse"></div>
+        <div class="skeleton skeleton-button skeleton-pulse"></div>
+      </div>
+    </div>
+    
+    <!-- List Item Skeleton -->
+    <div *ngIf="variant === 'list-item'" class="skeleton-list-item">
+      <div class="skeleton skeleton-circular skeleton-pulse skeleton-list-avatar"></div>
+      <div class="skeleton-list-content">
+        <div class="skeleton skeleton-text skeleton-pulse skeleton-list-title"></div>
+        <div class="skeleton skeleton-text skeleton-pulse skeleton-list-subtitle"></div>
+      </div>
+      <div class="skeleton skeleton-rectangular skeleton-pulse skeleton-list-action"></div>
+    </div>
+    
+    <!-- Product Card Skeleton -->
+    <div *ngIf="variant === 'product-card'" class="skeleton-product-card">
+      <div class="skeleton skeleton-rectangular skeleton-pulse skeleton-product-image"></div>
+      <div class="skeleton-product-content">
+        <div class="skeleton skeleton-text skeleton-pulse skeleton-product-title"></div>
+        <div class="skeleton skeleton-text skeleton-pulse skeleton-product-subtitle"></div>
+        <div class="skeleton skeleton-text skeleton-pulse skeleton-product-price"></div>
+        <div class="skeleton skeleton-button skeleton-pulse skeleton-product-button"></div>
+      </div>
+    </div>
+    
+    <!-- Dashboard Card Skeleton -->
+    <div *ngIf="variant === 'dashboard-card'" class="skeleton-dashboard-card">
+      <div class="skeleton-dashboard-header">
+        <div class="skeleton skeleton-text skeleton-pulse skeleton-dashboard-title"></div>
+        <div class="skeleton skeleton-circular skeleton-pulse skeleton-dashboard-icon"></div>
+      </div>
+      <div class="skeleton skeleton-text skeleton-pulse skeleton-dashboard-value"></div>
+      <div class="skeleton skeleton-text skeleton-pulse skeleton-dashboard-change"></div>
+    </div>
+    
+    <!-- Form Input Skeleton -->
+    <div *ngIf="variant === 'form-input'" class="skeleton-form-input">
+      <div class="skeleton skeleton-text skeleton-pulse skeleton-input-label"></div>
+      <div class="skeleton skeleton-rectangular skeleton-pulse skeleton-input-field"></div>
+    </div>
+    
+    <!-- Simple variants -->
+    <div
+      *ngIf="['rectangular', 'circular', 'rounded', 'avatar', 'button'].includes(variant)"
+      [class]="getSkeletonClasses()"
+      [style]="getSkeletonStyles()">
+    </div>
+    
+  </div>
+  
+</ng-container>
+
+<!-- Content slot when not loading -->
+<ng-template #content>
+  <ng-content></ng-content>
+</ng-template>

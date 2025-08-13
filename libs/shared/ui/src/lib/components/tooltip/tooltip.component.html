@@ -1,0 +1,19 @@
+<div 
+  class="tooltip-trigger"
+  (mouseenter)="onMouseEnter()"
+  (mouseleave)="onMouseLeave()"
+  (focus)="onFocus()"
+  (blur)="onBlur()">
+  
+  <!-- Trigger content -->
+  <ng-content></ng-content>
+  
+  <!-- Tooltip -->
+  <div
+    *ngIf="isVisible && content && !disabled"
+    [class]="getTooltipClasses()"
+    role="tooltip">
+    {{ content }}
+    <div class="tooltip-arrow"></div>
+  </div>
+</div>

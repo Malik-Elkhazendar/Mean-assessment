@@ -1,2 +1,52 @@
-<app-nx-welcome></app-nx-welcome>
-<router-outlet></router-outlet>
+<!-- Header -->
+<ui-header
+  [brandText]="title"
+  brandIcon="business_center"
+  [navigationItems]="(navigationItems$ | async) ?? []"
+  [showSearch]="!!(isAuthenticated$ | async)"
+  [showNotifications]="false"
+[user]="(headerUser$ | async) || undefined"
+  [userMenuItems]="userMenuItems"
+  (mobileMenuClick)="onMobileMenuClick()"
+  (searchClick)="onSearchClick()"
+  
+  (logoutClick)="onLogoutClick()">
+</ui-header>
+
+<!-- Main Layout Container -->
+<mat-sidenav-container class="app-container">
+  <!-- Side Navigation (only show when authenticated) -->
+  <mat-sidenav
+    *ngIf="isAuthenticated$ | async"
+    #sidenav
+    [mode]="isMobile ? 'over' : 'side'"
+    [opened]="sidenavOpened && !!(isAuthenticated$ | async)"
+    (closed)="onSidenavClosed()"
+    class="app-sidenav">
+    
+    <div class="sidenav-header">
+      <h3>Navigation</h3>
+    </div>
+    
+    <mat-nav-list>
+      <a 
+        *ngFor="let item of sidenavItems"
+        mat-list-item
+        [routerLink]="item.route"
+        routerLinkActive="active-nav-item"
+        (click)="isMobile && sidenav.close()">
+        <mat-icon matListItemIcon>{{ item.icon }}</mat-icon>
+        <span matListItemTitle>{{ item.label }}</span>
+      </a>
+    </mat-nav-list>
+  </mat-sidenav>
+
+  <!-- Main Content -->
+  <mat-sidenav-content class="app-content">
+    <div class="content-container">
+      <router-outlet></router-outlet>
+    </div>
+    <!-- Simple Footer -->
+    <ui-footer></ui-footer>
+  </mat-sidenav-content>
+</mat-sidenav-container>

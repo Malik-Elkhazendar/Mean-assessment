@@ -1,0 +1,174 @@
+/* App Layout Styles - Account for Fixed Header */
+.app-container {
+  width: 100%;
+  margin-top: 68px; /* Match header height */
+  min-height: calc(100vh - 68px); /* Full height minus header */
+  display: flex;
+  flex-direction: column;
+}
+
+/* Sidenav Styles */
+.app-sidenav {
+  width: 280px;
+  background-color: var(--surface-color);
+  border-right: 1px solid var(--divider-color);
+}
+
+.sidenav-header {
+  padding: 24px 16px 16px;
+  border-bottom: 1px solid var(--divider-color);
+  background-color: var(--surface-variant);
+}
+
+.sidenav-header h3 {
+  margin: 0;
+  color: var(--text-primary);
+  font-size: 18px;
+  font-weight: 500;
+}
+
+/* Navigation List Styles */
+mat-nav-list {
+  padding-top: 16px;
+}
+
+mat-nav-list a {
+  color: var(--text-primary);
+  text-decoration: none;
+  border-radius: 0 24px 24px 0;
+  margin: 4px 16px 4px 0;
+  transition: all 0.2s ease-in-out;
+}
+
+mat-nav-list a:hover {
+  background-color: var(--primary-50);
+  color: var(--primary-color);
+}
+
+mat-nav-list a.active-nav-item {
+  background-color: var(--primary-100);
+  color: var(--primary-color);
+  font-weight: 500;
+}
+
+mat-nav-list a.active-nav-item mat-icon {
+  color: var(--primary-color);
+}
+
+/* Content Styles */
+.app-content {
+  background-color: var(--background-color);
+  overflow-x: hidden;
+  display: flex;
+  flex-direction: column;
+  min-height: calc(100vh - 68px);
+}
+
+.content-container {
+  flex: 1;
+  padding: 24px;
+  max-width: 1200px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .app-container {
+    margin-top: 60px; /* Match mobile header height */
+  }
+  
+  .content-container {
+    padding: 16px;
+    min-height: calc(100vh - 60px);
+  }
+  
+  .app-sidenav {
+    width: 320px;
+  }
+}
+
+@media (max-width: 480px) {
+  .app-container {
+    margin-top: 56px; /* Smallest mobile header height */
+  }
+  
+  .content-container {
+    padding: 12px;
+    min-height: calc(100vh - 56px);
+  }
+  
+  .app-sidenav {
+    width: 280px;
+  }
+  
+  .sidenav-header {
+    padding: 16px;
+  }
+  
+  .sidenav-header h3 {
+    font-size: 16px;
+  }
+}
+
+/* Global Layout Utilities */
+.container {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+.app-content {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Card Container for consistent spacing */
+.card-container {
+  display: grid;
+  gap: 24px;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  margin-bottom: 24px;
+}
+
+@media (max-width: 768px) {
+  .container {
+    padding: 0 16px;
+  }
+  
+  .card-container {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+}
+
+/* Utility Classes */
+.text-center { text-align: center; }
+.mb-4 { margin-bottom: 2rem; }
+.mt-4 { margin-top: 2rem; }
+.p-4 { padding: 2rem; }
+
+/* Typography utilities following Material Design */
+.mat-headline {
+  font-size: 32px;
+  font-weight: 400;
+  line-height: 40px;
+  color: var(--text-primary);
+  margin-bottom: 16px;
+}
+
+.mat-title {
+  font-size: 20px;
+  font-weight: 500;
+  line-height: 32px;
+  color: var(--text-primary);
+  margin-bottom: 8px;
+}
+
+.mat-body {
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 24px;
+  color: var(--text-secondary);
+}

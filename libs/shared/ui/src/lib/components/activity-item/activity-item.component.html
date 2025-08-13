@@ -1,0 +1,9 @@
+<div class="activity-item">
+  <div class="activity-icon-wrapper">
+    <mat-icon [class]="iconClasses">{{ icon }}</mat-icon>
+  </div>
+  <div class="activity-text">
+    <span class="activity-label" *ngIf="!isStatus">{{ label }}:</span>
+    <span [class]="valueClasses">{{ value }}</span>
+  </div>
+</div>

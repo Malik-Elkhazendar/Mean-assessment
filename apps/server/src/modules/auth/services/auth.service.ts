@@ -7,7 +7,7 @@ import { WinstonLoggerService } from '../../../core/logger/winston-logger.servic
 import { SignupDto, LoginDto, ResetPasswordDto } from '@mean-assessment/dto';
 import { User, AuthResponse } from '@mean-assessment/data-models';
 import { AuthMessageResponse } from '../interfaces/auth-request.interface';
-import { ERROR_MESSAGES, TOKEN_EXPIRY } from '@mean-assessment/constants';
+import { ERROR_MESSAGES, TOKEN_EXPIRY, SUCCESS_MESSAGES } from '@mean-assessment/constants';
 
 /**
  * JWT token payload interface
@@ -184,7 +184,7 @@ export class AuthService {
       });
 
       return {
-        message: 'Successfully signed out. Please remove the token from your client.',
+        message: SUCCESS_MESSAGES.AUTH.SIGNOUT_SUCCESS,
         timestamp: new Date().toISOString(),
       };
     } catch (error) {
@@ -306,7 +306,7 @@ export class AuthService {
     }
 
     return {
-      message: 'If an account with this email exists, you will receive password reset instructions.',
+      message: SUCCESS_MESSAGES.AUTH.FORGOT_PASSWORD_SUCCESS,
       timestamp: new Date().toISOString(),
     };
   }
@@ -331,7 +331,7 @@ export class AuthService {
       const { email, resetToken, newPassword } = resetPasswordDto;
 
       if (!resetToken || !newPassword) {
-        throw new BadRequestException('Reset token and new password are required');
+        throw new BadRequestException(ERROR_MESSAGES.VALIDATION.REQUIRED_FIELD('Reset token and new password'));
       }
 
       // Find user by email
@@ -343,7 +343,7 @@ export class AuthService {
       // Validate reset token using existing UserService method
       const isValidToken = await this.userService.validatePasswordResetToken(user.id, resetToken, correlationId);
       if (!isValidToken) {
-        throw new BadRequestException('Invalid or expired reset token');
+        throw new BadRequestException(ERROR_MESSAGES.AUTH.TOKEN_INVALID);
       }
 
       // Update password using existing UserService method
@@ -355,7 +355,7 @@ export class AuthService {
       });
 
       return {
-        message: 'Password reset successful. You can now sign in with your new password.',
+        message: SUCCESS_MESSAGES.AUTH.RESET_PASSWORD_SUCCESS,
         timestamp: new Date().toISOString(),
       };
 

@@ -1,0 +1,33 @@
+<div 
+  *ngIf="isOpen"
+  class="modal-backdrop"
+  (click)="onBackdropClick()">
+  
+  <div [class]="getModalClasses()" (click)="onModalClick($event)">
+    <!-- Modal Header -->
+    <div *ngIf="showHeader" class="modal-header">
+      <h2 *ngIf="title" class="modal-title">{{ title }}</h2>
+      <ng-content select="[slot=title]"></ng-content>
+      
+      <button
+        *ngIf="closable"
+        type="button"
+        mat-icon-button
+        class="modal-close-button"
+        (click)="onClose()"
+        aria-label="Close modal">
+        <mat-icon fontSet="material-icons" fontIcon="close"></mat-icon>
+      </button>
+    </div>
+
+    <!-- Modal Body -->
+    <div class="modal-body">
+      <ng-content></ng-content>
+    </div>
+
+    <!-- Modal Footer -->
+    <div *ngIf="showFooter" class="modal-footer">
+      <ng-content select="[slot=footer]"></ng-content>
+    </div>
+  </div>
+</div>

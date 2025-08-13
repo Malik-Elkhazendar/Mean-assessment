@@ -1,0 +1,112 @@
+@use '@angular/material' as mat;
+
+// Note: Typography config is defined in `_theme.scss` using Material v2 API.
+// This file provides utility classes only and doesn't call deprecated Sass APIs.
+
+// Typography utility classes
+.mat-h1, .mat-headline, .mat-typography h1 {
+  font-size: 24px;
+  font-weight: 400;
+  line-height: 32px;
+  margin: 0 0 16px;
+}
+
+.mat-h2, .mat-title, .mat-typography h2 {
+  font-size: 20px;
+  font-weight: 500;
+  line-height: 32px;
+  margin: 0 0 16px;
+}
+
+.mat-h3, .mat-subheading-2, .mat-typography h3 {
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 28px;
+  margin: 0 0 16px;
+}
+
+.mat-h4, .mat-subheading-1, .mat-typography h4 {
+  font-size: 15px;
+  font-weight: 400;
+  line-height: 24px;
+  margin: 0 0 16px;
+}
+
+.mat-h5, .mat-typography h5 {
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 20px;
+  margin: 0 0 12px;
+}
+
+.mat-h6, .mat-typography h6 {
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 20px;
+  margin: 0 0 12px;
+}
+
+.mat-body-strong, .mat-body-2 {
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 24px;
+}
+
+.mat-body, .mat-body-1, .mat-typography {
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 20px;
+}
+
+.mat-small, .mat-caption {
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 20px;
+}
+
+// Custom typography utilities
+.text-ellipsis {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.text-center {
+  text-align: center;
+}
+
+.text-left {
+  text-align: left;
+}
+
+.text-right {
+  text-align: right;
+}
+
+.text-uppercase {
+  text-transform: uppercase;
+}
+
+.text-lowercase {
+  text-transform: lowercase;
+}
+
+.text-capitalize {
+  text-transform: capitalize;
+}
+
+.font-weight-light {
+  font-weight: 300;
+}
+
+.font-weight-normal {
+  font-weight: 400;
+}
+
+.font-weight-medium {
+  font-weight: 500;
+}
+
+.font-weight-bold {
+  font-weight: 700;
+}

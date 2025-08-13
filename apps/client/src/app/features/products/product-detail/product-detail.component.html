@@ -1,0 +1,132 @@
+<div class="product-detail-container">
+  <!-- Page Header -->
+  <div class="page-header">
+    <div class="header-content">
+      <h1 class="page-title">Product Details</h1>
+      <p class="page-subtitle">View complete product information</p>
+    </div>
+    
+    <div class="header-actions">
+      <ui-button
+        variant="text"
+        color="teal"
+        content="Back to Products"
+        routerLink="/products"
+        [fullWidth]="false">
+      </ui-button>
+    </div>
+  </div>
+
+  <!-- Loading State -->
+  <ui-spinner *ngIf="isLoading" message="Loading product details..."></ui-spinner>
+
+  <!-- Error State -->
+  <ui-alert 
+    *ngIf="error && !isLoading"
+    type="error"
+    [dismissible]="true"
+    (dismiss)="clearError()">
+    {{ error }}
+  </ui-alert>
+
+  <!-- Product Details -->
+  <div class="product-details" *ngIf="!isLoading && !error && product">
+    <div class="details-grid">
+      
+      <!-- Main Product Information -->
+      <ui-card variant="elevated" title="Product Information" [elevation]="2" class="main-info-card">
+        <div class="product-info">
+          <h2 class="product-name">{{ product.name }}</h2>
+          <p class="product-description">{{ product.description || 'No description available' }}</p>
+          
+          <div class="product-meta">
+            <div class="meta-item">
+              <strong>Category:</strong> {{ product.category || 'Uncategorized' }}
+            </div>
+            <div class="meta-item">
+              <strong>Price:</strong> <span class="price">${{ product.price | number:'1.2-2' }}</span>
+            </div>
+            <div class="meta-item">
+              <strong>Quantity:</strong> 
+              <ui-tooltip [content]="product.inStock ? 'This product is currently in stock' : 'This product is out of stock'">
+                <ui-badge 
+                  [variant]="product.inStock ? 'success' : 'error'"
+                  [content]="product.inStock ? product.quantity + ' units available' : 'Out of stock'"
+                  size="medium">
+                </ui-badge>
+              </ui-tooltip>
+            </div>
+            <div class="meta-item">
+              <strong>Status:</strong>
+              <ui-tooltip content="Product availability status">
+                <ui-badge 
+                  [variant]="product.inStock ? 'primary' : 'secondary'"
+                  [content]="product.inStock ? 'In Stock' : 'Out of Stock'"
+                  size="medium">
+                </ui-badge>
+              </ui-tooltip>
+            </div>
+          </div>
+        </div>
+      </ui-card>
+
+      <!-- Actions Card -->
+      <ui-card variant="outlined" title="Actions" class="actions-card">
+        <div class="action-buttons">
+          <ui-button
+            variant="raised"
+            color="primary"
+            content="Edit Product"
+            [routerLink]="'/products/' + product.id + '/edit'"
+            [fullWidth]="true">
+          </ui-button>
+          
+          <ui-button
+            variant="outlined"
+            color="warn"
+            content="Delete Product"
+            (click)="deleteProduct()"
+            [fullWidth]="true">
+          </ui-button>
+          
+        </div>
+      </ui-card>
+    </div>
+
+    
+  </div>
+
+  <!-- Delete Confirmation Modal -->
+  <ui-modal 
+    [isOpen]="showDeleteModal"
+    title="Confirm Delete"
+    size="medium"
+    [showFooter]="true"
+    (close)="closeDeleteModal()">
+    
+    <div class="delete-confirmation">
+      <p>Are you sure you want to delete the product <strong>"{{ product?.name }}"</strong>?</p>
+      <p class="warning-text">This action cannot be undone. All data related to this product will be permanently removed.</p>
+    </div>
+
+    <div slot="footer" class="modal-actions">
+      <ui-button
+        variant="text"
+        color="primary"
+        content="Cancel"
+        (click)="closeDeleteModal()"
+        [fullWidth]="false">
+      </ui-button>
+      
+      <ui-button
+        variant="raised"
+        color="warn"
+        content="Delete Product"
+        icon="delete"
+        (click)="confirmDelete()"
+        [fullWidth]="false">
+      </ui-button>
+    </div>
+  </ui-modal>
+
+</div>

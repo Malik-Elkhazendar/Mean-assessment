@@ -1,101 +1,112 @@
-# MeanAssessment
+# MEAN Stack Assessment
 
-<a alt="Nx logo" href="https://nx.dev" target="_blank" rel="noreferrer"><img src="https://raw.githubusercontent.com/nrwl/nx/master/images/nx-logo.png" width="45"></a>
+A modern full-stack web application built with Angular, NestJS, MongoDB, and TypeScript in an Nx monorepo.
 
-✨ Your new, shiny [Nx workspace](https://nx.dev) is ready ✨.
+## ✨ Features
 
-[Learn more about this workspace setup and its capabilities](https://nx.dev/nx-api/nest?utm_source=nx_project&amp;utm_medium=readme&amp;utm_campaign=nx_projects) or run `npx nx graph` to visually explore what was created. Now, let's get you up to speed!
+- **Authentication**: Signup, signin, signout with 8-hour JWT sessions
+- **Product Management**: Create, read, update, delete products with search and pagination
+- **Dashboard**: Personalized user dashboard with statistics
+- **Responsive Design**: Mobile-first Material Design interface
+- **Password Reset**: Complete forgot password flow with email notifications
 
-## Run tasks
+## 🚀 Quick Start
 
-To run the dev server for your app, use:
+### Prerequisites
+- Node.js 18+
+- MongoDB (local or cloud)
 
-```sh
+### Setup
+
+1. **Install dependencies**
+```bash
+npm install
+```
+
+2. **Environment configuration**
+Create `apps/server/.env`:
+```env
+MONGODB_URI=mongodb+srv://your-connection-string
+JWT_SECRET=your-secret-key
+JWT_EXPIRES_IN=8h
+MAIL_HOST=sandbox.smtp.mailtrap.io
+MAIL_PORT=2525
+MAIL_USER=your-username
+MAIL_PASS=your-password
+```
+
+3. **Start the application**
+```bash
+# Backend (Terminal 1)
 npx nx serve server
+
+# Frontend (Terminal 2)  
+npx nx serve client
 ```
 
-To create a production bundle:
+The app will be available at:
+- Frontend: http://localhost:4200
+- Backend API: http://localhost:3000
+- API Docs: http://localhost:3000/api/docs
 
-```sh
-npx nx build server
+## 📁 Project Structure
+
+```
+apps/
+├── client/           # Angular frontend
+└── server/           # NestJS backend
+
+libs/shared/          # Shared libraries
+├── auth/            # NgRx authentication
+├── constants/       # API routes, error messages
+├── data-models/     # TypeScript interfaces
+├── dto/             # Data transfer objects
+└── ui/              # Reusable components
 ```
 
-To see all available targets to run for a project, run:
+## 🔐 Authentication Flow
 
-```sh
-npx nx show project server
+1. **Signup/Signin**: JWT tokens with 8-hour expiry
+2. **Protected Routes**: Dashboard and products require authentication
+3. **Session Persistence**: Tokens stored in localStorage
+4. **Password Reset**: Email-based token reset system
+
+## 📦 Product Features
+
+- **CRUD Operations**: Full create, read, update, delete
+- **User-Scoped**: Each user manages their own products
+- **Search & Filter**: Text search and category filtering
+- **Pagination**: Efficient data loading
+- **Statistics**: Product counts and inventory analytics
+
+## 🛠️ Development
+
+### Common Commands
+```bash
+# Testing
+npx nx test server
+npx nx test client
+
+# Linting
+npx nx lint
+
+# Build for production
+npx nx build server --configuration=production
+npx nx build client --configuration=production
 ```
 
-These targets are either [inferred automatically](https://nx.dev/concepts/inferred-tasks?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) or defined in the `project.json` or `package.json` files.
+### Key Technologies
+- **Frontend**: Angular 20+, NgRx, Angular Material
+- **Backend**: NestJS, Mongoose, Passport JWT
+- **Database**: MongoDB with Atlas cloud hosting
+- **Validation**: class-validator for DTOs
+- **Email**: Nodemailer with SMTP integration
 
-[More about running tasks in the docs &raquo;](https://nx.dev/features/run-tasks?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
 
-## Add new projects
+##  Live Demo
 
-While you could add new projects to your workspace manually, you might want to leverage [Nx plugins](https://nx.dev/concepts/nx-plugins?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) and their [code generation](https://nx.dev/features/generate-code?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) feature.
+The application includes sample data and is ready for demonstration with full authentication and product management workflows.
 
-Use the plugin's generator to create new projects.
+---
 
-To generate a new application, use:
-
-```sh
-npx nx g @nx/nest:app demo
-```
-
-To generate a new library, use:
-
-```sh
-npx nx g @nx/node:lib mylib
-```
-
-You can use `npx nx list` to get a list of installed plugins. Then, run `npx nx list <plugin-name>` to learn about more specific capabilities of a particular plugin. Alternatively, [install Nx Console](https://nx.dev/getting-started/editor-setup?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) to browse plugins and generators in your IDE.
-
-[Learn more about Nx plugins &raquo;](https://nx.dev/concepts/nx-plugins?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) | [Browse the plugin registry &raquo;](https://nx.dev/plugin-registry?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-
-## Set up CI!
-
-### Step 1
-
-To connect to Nx Cloud, run the following command:
-
-```sh
-npx nx connect
-```
-
-Connecting to Nx Cloud ensures a [fast and scalable CI](https://nx.dev/ci/intro/why-nx-cloud?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) pipeline. It includes features such as:
-
-- [Remote caching](https://nx.dev/ci/features/remote-cache?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-- [Task distribution across multiple machines](https://nx.dev/ci/features/distribute-task-execution?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-- [Automated e2e test splitting](https://nx.dev/ci/features/split-e2e-tasks?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-- [Task flakiness detection and rerunning](https://nx.dev/ci/features/flaky-tasks?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-
-### Step 2
-
-Use the following command to configure a CI workflow for your workspace:
-
-```sh
-npx nx g ci-workflow
-```
-
-[Learn more about Nx on CI](https://nx.dev/ci/intro/ci-with-nx#ready-get-started-with-your-provider?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-
-## Install Nx Console
-
-Nx Console is an editor extension that enriches your developer experience. It lets you run tasks, generate code, and improves code autocompletion in your IDE. It is available for VSCode and IntelliJ.
-
-[Install Nx Console &raquo;](https://nx.dev/getting-started/editor-setup?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-
-## Useful links
-
-Learn more:
-
-- [Learn more about this workspace setup](https://nx.dev/nx-api/nest?utm_source=nx_project&amp;utm_medium=readme&amp;utm_campaign=nx_projects)
-- [Learn about Nx on CI](https://nx.dev/ci/intro/ci-with-nx?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-- [Releasing Packages with Nx release](https://nx.dev/features/manage-releases?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-- [What are Nx plugins?](https://nx.dev/concepts/nx-plugins?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-
-And join the Nx community:
-- [Discord](https://go.nx.dev/community)
-- [Follow us on X](https://twitter.com/nxdevtools) or [LinkedIn](https://www.linkedin.com/company/nrwl)
-- [Our Youtube channel](https://www.youtube.com/@nxdevtools)
-- [Our blog](https://nx.dev/blog?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
+**Built with the MEAN Stack (MongoDB, Express/NestJS, Angular, Node.js)**

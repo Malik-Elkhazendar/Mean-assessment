@@ -1,0 +1,26 @@
+/* Clean responsive grid component */
+
+.stats-grid {
+  margin-bottom: 64px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 1024px) {
+  .stats-grid {
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)) !important;
+  }
+}
+
+@media (max-width: 768px) {
+  .stats-grid {
+    grid-template-columns: 1fr !important;
+    gap: 16px !important;
+    margin-bottom: 40px;
+  }
+}
+
+@media (max-width: 480px) {
+  .stats-grid {
+    margin-bottom: 32px;
+  }
+}

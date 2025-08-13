@@ -1,0 +1,140 @@
+<div class="signup-container">
+  <div class="signup-content">
+    <!-- Simple Brand Header (like hardcoded design) -->
+    <div class="brand-header">
+      <div class="brand-text">
+        <h1 class="brand-name">{{ signUpTitle }}</h1>
+        <p class="brand-tagline">{{ signUpSubtitle }}</p>
+      </div>
+    </div>
+
+    <!-- Form Container (simplified to match hardcoded design) -->
+    <div class="signup-form-container">
+      <!-- Loading State -->
+      <ui-spinner 
+        *ngIf="loading$ | async" 
+        [message]="loadingMessage">
+      </ui-spinner>
+
+      <!-- Error Alert -->
+      <ui-alert 
+        *ngIf="(error$ | async) && (loading$ | async) === false"
+        type="error"
+        [message]="(error$ | async)!"
+        [dismissible]="true"
+        (dismissed)="onClearError()">
+      </ui-alert>
+
+      <!-- Sign Up Form -->
+      <form 
+        *ngIf="(loading$ | async) === false" 
+        [formGroup]="signupForm" 
+        (ngSubmit)="onSubmit()"
+        class="signup-form">
+        
+        <div class="form-field">
+          <ui-form-input
+            [label]="firstNameLabel"
+            [placeholder]="firstNamePlaceholder"
+            type="text"
+            [required]="true"
+            [autocomplete]="'off'"
+            [formControl]="firstNameControl"
+            [error]="getFieldError('firstName')">
+          </ui-form-input>
+        </div>
+
+        <div class="form-field">
+          <ui-form-input
+            [label]="lastNameLabel"
+            [placeholder]="lastNamePlaceholder"
+            type="text"
+            [required]="true"
+            [autocomplete]="'off'"
+            [formControl]="lastNameControl"
+            [error]="getFieldError('lastName')">
+          </ui-form-input>
+        </div>
+
+        <div class="form-field">
+          <ui-form-input
+            [label]="emailLabel"
+            [placeholder]="emailPlaceholder"
+            type="email"
+            [required]="true"
+            [autocomplete]="'off'"
+            [formControl]="emailControl"
+            [error]="getFieldError('email')">
+          </ui-form-input>
+        </div>
+
+        <div class="form-field">
+          <ui-form-input
+            [label]="passwordLabel"
+            [placeholder]="passwordPlaceholder"
+            type="password"
+            [required]="true"
+            [autocomplete]="'off'"
+            [formControl]="passwordControl"
+            [error]="getFieldError('password')">
+          </ui-form-input>
+        </div>
+        
+        <div class="form-field">
+          <ui-form-input
+            [label]="confirmPasswordLabel"
+            [placeholder]="confirmPasswordPlaceholder"
+            type="password"
+            [required]="true"
+            [autocomplete]="'off'"
+            [formControl]="confirmPasswordControl"
+            [error]="getFieldError('confirmPassword')">
+          </ui-form-input>
+        </div>
+
+        <!-- Terms Agreement -->
+        <div class="terms-section">
+          <p class="terms-text">
+            {{ termsAgreementText }}
+            <span class="terms-link">{{ termsOfServiceText }}</span>
+            {{ andText }}
+            <span class="terms-link">{{ privacyPolicyText }}</span>
+          </p>
+        </div>
+
+        <!-- Submit Button -->
+        <div class="submit-button">
+          <ui-button
+            [variant]="'raised'"
+            [color]="'primary'"
+            [size]="'large'"
+            [content]="signUpButtonText"
+            [loading]="!!(loading$ | async)"
+            [disabled]="!!(loading$ | async)"
+            [fullWidth]="true"
+            [type]="'button'"
+            (buttonClick)="onSubmit()">
+          </ui-button>
+        </div>
+
+        <!-- Divider -->
+        <div class="divider">
+          <span class="divider-text">{{ orText }}</span>
+        </div>
+
+        <!-- Sign In Link -->
+        <div class="signin-button">
+          <ui-button
+            [variant]="'stroked'"
+            [color]="'basic'"
+            [size]="'large'"
+            [content]="signInLinkText"
+            [fullWidth]="true"
+            [type]="'button'"
+            (buttonClick)="onSignInClick()">
+          </ui-button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

@@ -37,6 +37,10 @@ export class EmailService {
     this.logger.log('Sending password reset email', logContext);
 
     try {
+      // Get frontend URL from environment or default to localhost for development
+      const frontendUrl = process.env.CORS_ORIGINS?.split(',')[0]?.trim() || 'http://localhost:4200';
+      const resetUrl = `${frontendUrl}/auth/reset-password?token=${resetToken}&email=${encodeURIComponent(email)}`;
+
       await this.mailerService.sendMail({
         to: email,
         subject: 'Reset Your Password - MEAN Assessment',
@@ -45,6 +49,8 @@ export class EmailService {
           firstName,
           resetToken,
           email,
+          resetUrl,
+          frontendUrl,
         },
       });
 

@@ -1,5 +1,5 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Document, Types } from 'mongoose';
+import { Document, Types, UpdateQuery } from 'mongoose';
 import { Product as IProduct } from '@mean-assessment/data-models';
 
 /**
@@ -55,8 +55,10 @@ export class ProductEntity implements Omit<IProduct, 'id'> {
     max: [999999.99, 'Price cannot exceed 999,999.99'],
     validate: {
       validator: function(value: number) {
-        // Ensure price has at most 2 decimal places
-        return Number.isInteger(value * 100);
+        // Ensure price has at most 2 decimal places with floating point tolerance
+        if (typeof value !== 'number' || Number.isNaN(value)) return false;
+        const rounded = Math.round(value * 100) / 100;
+        return Math.abs(value - rounded) < 1e-9;
       },
       message: 'Price must have at most 2 decimal places'
     },
@@ -214,17 +216,31 @@ ProductSchema.pre('save', function(next) {
 
 // Pre-update middleware for business logic
 ProductSchema.pre('findOneAndUpdate', function(next) {
-  const update = this.getUpdate() as { quantity?: number; price?: number; inStock?: boolean };
-  
-  // Auto-update inStock if quantity is being updated
-  if (update.quantity !== undefined && update.quantity === 0) {
-    update.inStock = false;
+  const rawUpdate = this.getUpdate() as UpdateQuery<ProductEntity> | undefined;
+
+  if (!rawUpdate) {
+    return next();
   }
-  
+
+  // Support both direct update and $set style updates
+  const updateObject = rawUpdate as Partial<ProductEntity> & {
+    $set?: Partial<ProductEntity>;
+  };
+
+  // Normalize to $set so we don't accidentally conflict with operators
+  if (!updateObject.$set) {
+    updateObject.$set = {};
+  }
+
+  // Auto-update inStock if quantity is being updated to 0
+  if (typeof updateObject.quantity === 'number' && updateObject.quantity === 0) {
+    updateObject.$set.inStock = false;
+  }
+
   // Ensure price precision if price is being updated
-  if (update.price !== undefined) {
-    update.price = Math.round(update.price * 100) / 100;
+  if (typeof updateObject.price === 'number') {
+    updateObject.$set.price = Math.round(updateObject.price * 100) / 100;
   }
-  
+
   next();
 });

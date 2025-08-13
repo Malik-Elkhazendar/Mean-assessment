@@ -1,0 +1,417 @@
+mat-card {
+  margin: 0;
+  transition: all var(--transition-normal) ease;
+  border-radius: var(--radius-lg);
+  overflow: visible;
+  position: relative;
+  font-family: var(--font-family, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif);
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  width: 100%;
+  box-sizing: border-box;
+  
+  // Remove any pseudo-elements that could cause artifacts
+  &::before,
+  &::after {
+    display: none !important;
+  }
+  
+  // Fix all text elements inside cards
+  *, *::before, *::after {
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    box-sizing: border-box;
+  }
+  
+  // Custom elevation system
+  &.elevation-0 { box-shadow: none; }
+  &.elevation-1 { box-shadow: var(--elevation-2); }
+  &.elevation-2 { box-shadow: var(--elevation-4); }
+  &.elevation-3 { box-shadow: var(--elevation-6); }
+  &.elevation-4 { box-shadow: var(--elevation-8); }
+  &.elevation-5 { box-shadow: var(--elevation-12); }
+  &.elevation-6 { box-shadow: var(--elevation-16); }
+}
+
+// Ensure Material icons render with correct font in cards
+mat-card mat-icon {
+  font-family: 'Material Icons' !important;
+}
+
+// Card variants
+.card-outlined {
+  border: 1px solid var(--border-color);
+  box-shadow: none;
+  
+  &:hover {
+    border-color: var(--primary-color);
+  }
+}
+
+.card-filled {
+  background: var(--panel-background);
+  border: 1px solid var(--panel-border-color);
+  
+  // Ensure no pseudo-elements on variants
+  &::before,
+  &::after {
+    display: none !important;
+  }
+}
+
+.card-elevated {
+  background: var(--surface-color);
+  border: 1px solid var(--panel-border-color);
+  
+  // Ensure no pseudo-elements on variants
+  &::before,
+  &::after {
+    display: none !important;
+  }
+}
+
+// Interactive states
+.card-hover {
+  cursor: default;
+  /* remove global hover elevation/translate; keep only subtle header action fade-in */
+  &:hover {
+    box-shadow: var(--elevation-4);
+    transform: translateY(-1px);
+    .header-action-btn { opacity: 1; }
+  }
+}
+
+.card-clickable {
+  cursor: pointer;
+  &:hover { box-shadow: var(--elevation-6); transform: translateY(-1px); }
+  &:active { transform: translateY(0); }
+}
+
+// Density variants
+.card-dense {
+  mat-card-content {
+    padding: var(--space-3);
+  }
+  
+  mat-card-header {
+    padding: var(--space-3) var(--space-3) var(--space-2);
+  }
+  
+  .card-actions {
+    padding: var(--space-1) var(--space-2) var(--space-2);
+  }
+}
+
+// Header styles
+mat-card-header {
+  position: relative;
+  padding: var(--space-4);
+  background: transparent;
+  border-bottom: 1px solid var(--divider-color);
+  
+  .mat-mdc-card-title {
+    font-size: var(--text-lg);
+    font-weight: var(--font-bold);
+    color: var(--text-primary);
+    margin-bottom: var(--space-1);
+    line-height: var(--leading-tight);
+  }
+  
+  .mat-mdc-card-subtitle {
+    font-size: var(--text-sm);
+    color: var(--text-secondary);
+    line-height: var(--leading-normal);
+  }
+}
+
+.header-actions {
+  position: absolute;
+  top: var(--space-2);
+  right: var(--space-2);
+  display: flex;
+  gap: var(--space-1);
+}
+
+.header-action-btn {
+  opacity: 0.7;
+  transition: opacity var(--transition-normal) ease;
+  
+  &:hover {
+    opacity: 1;
+    background: rgba(var(--primary-rgb), 0.1);
+  }
+  
+  &:focus {
+    opacity: 1;
+  }
+}
+
+// Avatar styles
+[mat-card-avatar] {
+  &.avatar-icon {
+    background: var(--primary-500);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: var(--radius-full);
+    width: 48px;
+    height: 48px;
+    box-shadow: var(--elevation-2);
+    
+    .mat-icon {
+      font-size: 24px;
+      width: 24px;
+      height: 24px;
+    }
+  }
+  
+  &.avatar-text {
+    .avatar-text {
+      background: var(--accent-color);
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: var(--radius-full);
+      width: 48px;
+      height: 48px;
+      font-weight: var(--font-bold);
+      font-size: var(--text-lg);
+      box-shadow: var(--elevation-2);
+      text-transform: uppercase;
+    }
+  }
+  
+  &.avatar-image {
+    img {
+      width: 48px;
+      height: 48px;
+      border-radius: var(--radius-full);
+      object-fit: cover;
+      box-shadow: var(--elevation-2);
+    }
+  }
+}
+
+// Image styles
+.card-image-container {
+  overflow: hidden;
+  position: relative;
+}
+
+[mat-card-image] {
+  transition: transform var(--transition-normal) ease;
+  
+  &.card-image-cover {
+    object-fit: cover;
+    width: 100%;
+    height: 240px;
+  }
+  
+  &.card-image-contain {
+    object-fit: contain;
+    width: 100%;
+    max-height: 240px;
+    background: var(--surface-variant);
+  }
+  
+  .card-hover:hover & {
+    transform: scale(1.02);
+  }
+}
+
+// Content styles
+mat-card-content {
+  padding: var(--space-4);
+  
+  &.content-scrollable {
+    max-height: 320px;
+    overflow-y: auto;
+    
+    // Custom scrollbar
+    &::-webkit-scrollbar {
+      width: 6px;
+    }
+    
+    &::-webkit-scrollbar-track {
+      background: var(--surface-variant);
+      border-radius: var(--radius-sm);
+    }
+    
+    &::-webkit-scrollbar-thumb {
+      background: var(--text-secondary);
+      border-radius: var(--radius-sm);
+      
+      &:hover {
+        background: var(--text-primary);
+      }
+    }
+  }
+}
+
+.card-description {
+  margin: 0 0 var(--space-4) 0;
+  color: var(--text-secondary);
+  line-height: var(--leading-relaxed);
+  font-size: var(--text-sm);
+}
+
+// Actions styles
+.card-actions {
+  padding: var(--space-2) var(--space-4) var(--space-4);
+  background: transparent;
+  border-top: 1px solid var(--divider-color);
+}
+
+.card-action-btn {
+  margin-right: var(--space-2);
+  font-weight: var(--font-medium);
+  transition: all var(--transition-normal) ease;
+  
+  &:hover:not([disabled]) {
+    transform: translateY(-1px);
+  }
+  
+  .action-icon {
+    margin-right: var(--space-2);
+    font-size: 18px;
+    width: 18px;
+    height: 18px;
+  }
+  
+  &:last-child {
+    margin-right: 0;
+  }
+}
+
+// Footer styles
+.card-footer {
+  margin-top: auto;
+}
+
+.card-footer-content {
+  padding: var(--space-3) var(--space-4);
+  background: transparent;
+  border-top: 1px solid var(--divider-color);
+}
+
+.footer-text {
+  font-size: var(--text-xs);
+  color: var(--text-secondary);
+  margin: 0;
+  text-align: center;
+  font-style: italic;
+}
+
+// Responsive design
+@media (max-width: 768px) {
+  mat-card {
+    border-radius: var(--radius);
+  }
+  
+  mat-card-header {
+    padding: var(--space-3);
+  }
+  
+  mat-card-content {
+    padding: var(--space-3);
+  }
+  
+  .card-actions {
+    padding: var(--space-2) var(--space-3) var(--space-3);
+    flex-direction: column;
+    align-items: stretch;
+    
+    .card-action-btn {
+      margin-right: 0;
+      margin-bottom: var(--space-1);
+      
+      &:last-child {
+        margin-bottom: 0;
+      }
+    }
+  }
+  
+  .header-actions {
+    top: var(--space-1);
+    right: var(--space-1);
+  }
+  
+  [mat-card-image] {
+    &.card-image-cover {
+      height: 200px;
+    }
+  }
+}
+
+@media (max-width: 480px) {
+  .card-dense {
+    mat-card-header,
+    mat-card-content {
+      padding: var(--space-2);
+    }
+  }
+  
+  .card-description {
+    font-size: var(--text-xs);
+  }
+  
+  .header-actions {
+    flex-direction: column;
+    gap: 0;
+  }
+}
+
+// High contrast mode
+@media (prefers-contrast: high) {
+  mat-card {
+    border: 2px solid var(--text-primary);
+  }
+  
+  .card-outlined {
+    border-width: 3px;
+  }
+  
+  .card-description {
+    color: var(--text-primary);
+    font-weight: var(--font-medium);
+  }
+}
+
+// Reduced motion
+@media (prefers-reduced-motion: reduce) {
+  mat-card,
+  [mat-card-image],
+  .card-action-btn,
+  .header-action-btn {
+    transition: none !important;
+  }
+  
+  .card-hover:hover,
+  .card-clickable:hover {
+    transform: none !important;
+  }
+}
+
+// Focus management
+mat-card:focus-within {
+  outline: 2px solid var(--primary-color);
+  outline-offset: 2px;
+}
+
+// Print styles
+@media print {
+  mat-card {
+    break-inside: avoid;
+    box-shadow: none !important;
+    border: 1px solid #000 !important;
+  }
+  
+  .header-actions,
+  .card-actions {
+    display: none !important;
+  }
+}

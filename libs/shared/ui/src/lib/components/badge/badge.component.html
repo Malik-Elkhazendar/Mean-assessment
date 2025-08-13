@@ -1,0 +1,15 @@
+<span [class]="getBadgeClasses()" class="badge">
+  <span *ngIf="!dot" class="badge-content">
+    {{ content }}
+    <ng-content></ng-content>
+  </span>
+  
+  <button
+    *ngIf="removable"
+    type="button"
+    class="badge-remove"
+    (click)="onRemove()"
+    aria-label="Remove badge">
+    ×
+  </button>
+</span>

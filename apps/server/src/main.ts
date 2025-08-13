@@ -1,3 +1,19 @@
+/**
+ * MEAN Stack Assessment - NestJS Application Bootstrap
+ * 
+ * This is the main entry point for the NestJS backend server. It configures:
+ * - Global validation pipes with comprehensive error handling
+ * - CORS for Angular frontend integration (http://localhost:4200)
+ * - Swagger API documentation with JWT authentication support
+ * - Winston structured logging with correlation IDs
+ * - Graceful shutdown handling for production deployments
+ * 
+ * The server runs on port 3000 by default and provides RESTful APIs for:
+ * - Authentication (signup, signin, password reset)
+ * - User management (profile operations)
+ * - Product management (CRUD operations)
+ */
+
 import { ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { ConfigService } from '@nestjs/config';
@@ -5,20 +21,20 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { AppModule } from './app/app.module';
 import { WinstonLoggerService } from './core/logger/winston-logger.service';
 
-async function bootstrap() {
-  // Create application with buffer logs until logger is ready
+/**
+ * Bootstrap function that initializes and configures the NestJS application
+ * with all necessary middleware, security, and documentation features.
+ */
+async function bootstrap(): Promise<void> {
   const app = await NestFactory.create(AppModule, {
-    bufferLogs: true,
+    bufferLogs: true, // Buffer logs until Winston logger is ready
   });
   
-  // Get services
   const configService = app.get(ConfigService);
   const logger = app.get(WinstonLoggerService);
   
-  // Use our Winston logger
   app.useLogger(logger);
   
-  // Global configuration
   const globalPrefix = configService.get<string>('app.globalPrefix');
   const port = configService.get<number>('app.port');
   const nodeEnv = configService.get<string>('app.nodeEnv');
@@ -26,7 +42,13 @@ async function bootstrap() {
   
   app.setGlobalPrefix(globalPrefix);
   
-  // Global validation pipe with detailed error messages
+  /**
+   * Global validation pipe that:
+   * - Strips unknown properties (whitelist: true)
+   * - Rejects requests with unexpected properties (forbidNonWhitelisted: true)
+   * - Transforms incoming data to match DTO types (transform: true)
+   * - Provides detailed validation error messages for debugging
+   */
   app.useGlobalPipes(
     new ValidationPipe({
       whitelist: true,
@@ -49,11 +71,18 @@ async function bootstrap() {
     })
   );
   
-  // Dynamic CORS configuration
+  /**
+   * CORS configuration for Angular frontend (development: localhost:4200)
+   * Production origins should be configured via environment variables
+   */
   const corsConfig = configService.get('cors');
   app.enableCors(corsConfig);
   
-  // Swagger documentation setup
+  /**
+   * Swagger API documentation setup
+   * Provides interactive API documentation with JWT authentication testing
+   * Available at: http://localhost:3000/api/docs (development)
+   */
   const swaggerConfig = configService.get('swagger');
   if (swaggerConfig.enabled) {
     const config = new DocumentBuilder()
@@ -107,7 +136,10 @@ async function bootstrap() {
     });
   }
   
-  // Global exception handling for unhandled promise rejections
+  /**
+   * Global exception handlers for production stability
+   * Logs errors with context and performs graceful shutdown when necessary
+   */
   process.on('unhandledRejection', (reason, promise) => {
     logger.error('Unhandled Promise Rejection', reason as Error, {
       component: 'Process',
@@ -115,20 +147,21 @@ async function bootstrap() {
     });
   });
   
-  // Global exception handling for uncaught exceptions
   process.on('uncaughtException', (error) => {
     logger.error('Uncaught Exception', error, {
       component: 'Process',
       metadata: { fatal: true },
     });
     
-    // Graceful shutdown on uncaught exception
     setTimeout(() => {
       process.exit(1);
     }, 5000);
   });
   
-  // Graceful shutdown handling
+  /**
+   * Graceful shutdown handlers for production deployments
+   * Ensures proper cleanup of database connections and active requests
+   */
   process.on('SIGTERM', async () => {
     logger.log('SIGTERM received, shutting down gracefully', {
       component: 'Process',
@@ -149,7 +182,6 @@ async function bootstrap() {
   
   await app.listen(port);
   
-  // Startup logs with correlation
   const startupContext = { component: 'Bootstrap' };
   
   logger.log(`🚀 ${appName} is running on: http://localhost:${port}/${globalPrefix}`, startupContext);

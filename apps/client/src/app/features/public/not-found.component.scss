@@ -1,0 +1,157 @@
+.not-found-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: calc(100vh - 68px);
+  padding: var(--space-6);
+  background: var(--background-color);
+}
+
+.error-content {
+  max-width: 600px;
+  width: 100%;
+  text-align: center;
+}
+
+.error-visual {
+  position: relative;
+  margin-bottom: 32px;
+}
+
+.error-code {
+  font-size: 120px;
+  font-weight: 300;
+  color: var(--primary-color);
+  margin: 0;
+  line-height: 1;
+  opacity: 0.8;
+}
+
+.error-icon {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 40px;
+  opacity: 0.6;
+}
+
+.error-message {
+  margin-bottom: 40px;
+}
+
+.error-title {
+  font-size: 2rem;
+  color: var(--text-primary);
+  margin-bottom: 16px;
+  font-weight: 400;
+}
+
+.error-description {
+  color: var(--text-secondary);
+  font-size: 1.125rem;
+  line-height: 1.6;
+  margin: 0;
+}
+
+.error-actions {
+  display: flex;
+  gap: 16px;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-bottom: 48px;
+}
+
+.helpful-links {
+  margin-top: 48px;
+}
+
+.links-card {
+  padding: 24px;
+  max-width: 400px;
+  margin: 0 auto;
+}
+
+.link-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 16px;
+}
+
+.help-link {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 16px;
+  text-decoration: none;
+  color: var(--text-primary);
+  border-radius: 8px;
+  transition: background-color 0.2s ease;
+}
+
+.help-link:hover {
+  background-color: var(--hover-color);
+  text-decoration: none;
+}
+
+.link-icon {
+  font-size: 24px;
+}
+
+.help-link span:last-child {
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+  text-align: center;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .not-found-container {
+    padding: 16px;
+  }
+
+  .error-code {
+    font-size: 80px;
+  }
+
+  .error-icon {
+    font-size: 30px;
+  }
+
+  .error-title {
+    font-size: 1.5rem;
+  }
+
+  .error-actions {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .error-actions ui-button {
+    width: 100%;
+    max-width: 250px;
+  }
+
+  .link-grid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+}
+
+/* Animation for visual appeal */
+@keyframes bounce {
+  0%, 20%, 50%, 80%, 100% {
+    transform: translateY(0);
+  }
+  40% {
+    transform: translateY(-10px);
+  }
+  60% {
+    transform: translateY(-5px);
+  }
+}
+
+.error-icon {
+  animation: bounce 2s infinite;
+}

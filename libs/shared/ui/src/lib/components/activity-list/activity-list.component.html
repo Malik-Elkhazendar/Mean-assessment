@@ -1,0 +1,28 @@
+<div class="activity-list">
+  <h3 class="list-title">{{ title }}</h3>
+  
+  <div class="activity-items" *ngIf="activities.length > 0; else noActivities">
+    <div class="activity-item" *ngFor="let activity of activities; trackBy: trackByActivity">
+      <div class="activity-icon">
+        <mat-icon>{{ activity.icon || 'history' }}</mat-icon>
+      </div>
+      <div class="activity-content">
+        <div class="activity-main">
+          <h4 class="activity-title">{{ activity.title }}</h4>
+          <p class="activity-description">{{ activity.description }}</p>
+        </div>
+        <div class="activity-time">
+          <span class="activity-date">{{ formatDate(activity.timestamp) }}</span>
+          <span class="activity-timestamp">{{ formatTime(activity.timestamp) }}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <ng-template #noActivities>
+    <div class="no-activities">
+      <mat-icon>inbox</mat-icon>
+      <p>No recent activity</p>
+    </div>
+  </ng-template>
+</div>

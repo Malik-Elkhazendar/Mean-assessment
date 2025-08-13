@@ -1,0 +1,61 @@
+<div class="dashboard">
+  <!-- Header Navigation -->
+  <ui-header class="dashboard-header"></ui-header>
+  
+  <!-- Main Content -->
+  <div class="dashboard-content" *ngIf="(loading$ | async) === false; else loadingTemplate">
+    
+    <!-- Welcome Section -->
+    <section class="welcome-section">
+      <h1 class="welcome-title">{{ content.HEADER.WELCOME_TITLE }}</h1>
+      <p class="welcome-subtitle">{{ content.HEADER.SUBTITLE }}</p>
+    </section>
+
+    <!-- Single Account Status Card -->
+    <section class="account-section">
+      <ui-account-status-card
+        [accountType]="content.ACCOUNT_STATUS.ACCOUNT_TYPE"
+        [status]="content.ACCOUNT_STATUS.STATUS_ACTIVE"
+        [name]="(userFullName$ | async) || content.ACCOUNT_STATUS.DEFAULT_NAME"
+        [email]="(user$ | async)?.email || content.ACCOUNT_STATUS.DEFAULT_EMAIL"
+        [memberSince]="(user$ | async)?.createdAt"
+        [sessionExpiresIn]="sessionExpiry$ | async">
+      </ui-account-status-card>
+    </section>
+
+    <!-- Recent Activity List -->
+    <section class="activity-section">
+      <ui-activity-list
+        [title]="content.RECENT_ACTIVITY.TITLE"
+        [activities]="activities">
+      </ui-activity-list>
+    </section>
+
+    <!-- Feature Highlights -->
+    <section class="features-section">
+      <ui-feature-highlights
+        [title]="content.FEATURES.TITLE"
+        [features]="features">
+      </ui-feature-highlights>
+    </section>
+    
+  </div>
+
+  <!-- Loading Template -->
+  <ng-template #loadingTemplate>
+    <div class="loading-content">
+      <ui-skeleton-loader variant="text" width="40%" height="2rem" animation="wave"></ui-skeleton-loader>
+      <ui-skeleton-loader variant="text" width="60%" height="1.2rem" animation="wave"></ui-skeleton-loader>
+      
+      <div class="loading-sections">
+        <ui-skeleton-loader variant="rectangular" width="100%" height="200px" animation="wave"></ui-skeleton-loader>
+        <ui-skeleton-loader variant="rectangular" width="100%" height="300px" animation="wave"></ui-skeleton-loader>
+        <div class="loading-grid">
+          <ui-skeleton-loader variant="rectangular" width="100%" height="180px" animation="wave"></ui-skeleton-loader>
+          <ui-skeleton-loader variant="rectangular" width="100%" height="180px" animation="wave"></ui-skeleton-loader>
+          <ui-skeleton-loader variant="rectangular" width="100%" height="180px" animation="wave"></ui-skeleton-loader>
+        </div>
+      </div>
+    </div>
+  </ng-template>
+</div>

@@ -1,0 +1,30 @@
+{
+  "moduleFileExtensions": ["js", "json", "ts"],
+  "rootDir": ".",
+  "testEnvironment": "node",
+  "testRegex": ".e2e-spec.ts$",
+  "coverageDirectory": "../coverage",
+  "testTimeout": 90000,
+  "setupFilesAfterEnv": ["<rootDir>/setup-e2e.ts"],
+  "collectCoverageFrom": [
+    "src/**/*.ts",
+    "!src/**/*.spec.ts",
+    "!src/**/*.e2e-spec.ts",
+    "!src/main.ts"
+  ],
+  "moduleNameMapper": {
+    "^src/(.*)$": "<rootDir>/../src/$1",
+    "^@mean-assessment/logger$": "<rootDir>/../../../libs/shared/logger/src/index.ts",
+    "^@mean-assessment/constants$": "<rootDir>/../../../libs/shared/constants/src/index.ts",
+    "^@mean-assessment/data-models$": "<rootDir>/../../../libs/shared/data-models/src/index.ts",
+    "^@mean-assessment/dto$": "<rootDir>/../../../libs/shared/dto/src/index.ts",
+    "^@mean-assessment/validation$": "<rootDir>/../../../libs/shared/validation/src/index.ts",
+    "^@mean-assessment/ui$": "<rootDir>/../../../libs/shared/ui/src/index.ts",
+    "^@mean-assessment/shared/ui$": "<rootDir>/../../../libs/shared/ui/src/index.ts"
+  },
+  "transform": {
+    "^.+\\.(t|j)s$": ["ts-jest", {
+      "tsconfig": "<rootDir>/../tsconfig.e2e.json"
+    }]
+  }
+}

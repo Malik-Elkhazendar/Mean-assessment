@@ -1,0 +1,35 @@
+<div class="alert" [class]="'alert-' + type" [class.dismissible]="dismissible" role="alert" [attr.aria-live]="type === 'error' ? 'assertive' : 'polite'">
+  <div class="alert-content">
+    <div class="alert-icon-wrapper">
+      <mat-icon class="alert-icon" fontSet="material-icons" [fontIcon]="getIcon()" [attr.aria-hidden]="true"></mat-icon>
+    </div>
+    
+    <div class="alert-message">
+      <h4 *ngIf="title" class="alert-title">{{ title }}</h4>
+      <p class="alert-text">{{ message }}</p>
+      
+      <div *ngIf="actions && actions.length > 0" class="alert-actions">
+        <button 
+          *ngFor="let action of actions; trackBy: trackByAction"
+          mat-button
+          [color]="getActionColor()"
+          (click)="onActionClick(action)"
+          class="alert-action-btn">
+          {{ action.label }}
+        </button>
+      </div>
+    </div>
+  </div>
+  
+  <button 
+    *ngIf="dismissible"
+    mat-icon-button
+    class="alert-close"
+    (click)="onDismiss()"
+    [attr.aria-label]="'Close ' + type + ' alert'"
+    type="button">
+    <mat-icon fontSet="material-icons" fontIcon="close"></mat-icon>
+  </button>
+</div>
+
+

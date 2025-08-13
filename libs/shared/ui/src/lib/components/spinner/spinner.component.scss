@@ -1,0 +1,139 @@
+.spinner-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-family, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif);
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  
+  // Fix all text elements inside spinner
+  *, *::before, *::after {
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+  
+  &.overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(var(--surface-rgb), 0.9);
+    z-index: var(--z-overlay, 1000);
+    animation: fadeIn var(--transition-normal) ease-out;
+  }
+  
+  &.inline {
+    padding: var(--space-4);
+    min-height: 120px;
+  }
+}
+
+.spinner-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-4);
+  text-align: center;
+}
+
+.spinner {
+  ::ng-deep circle {
+    stroke-linecap: round;
+    animation: spinnerRotate 2s linear infinite;
+  }
+  
+  &[color="primary"] ::ng-deep circle {
+    stroke: var(--primary-color);
+  }
+  
+  &[color="accent"] ::ng-deep circle {
+    stroke: var(--accent-color);
+  }
+  
+  &[color="warn"] ::ng-deep circle {
+    stroke: var(--error-color);
+  }
+}
+
+.spinner-content {
+  max-width: 240px;
+}
+
+.spinner-message {
+  margin: 0;
+  font-size: var(--text-sm);
+  font-weight: var(--font-medium);
+  color: var(--text-secondary);
+  line-height: var(--leading-relaxed);
+  animation: fadeInUp var(--transition-normal) ease-out var(--transition-fast) both;
+}
+
+// Animations
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes spinnerRotate {
+  0% {
+    stroke-dasharray: 1, 200;
+    stroke-dashoffset: 0;
+  }
+  50% {
+    stroke-dasharray: 90, 200;
+    stroke-dashoffset: -35px;
+  }
+  100% {
+    stroke-dashoffset: -125px;
+  }
+}
+
+// Responsive adjustments
+@media (max-width: 480px) {
+  .spinner-container.overlay {
+    padding: var(--space-4);
+  }
+  
+  .spinner-message {
+    font-size: var(--text-xs);
+  }
+}
+
+// Reduced motion support
+@media (prefers-reduced-motion: reduce) {
+  .spinner ::ng-deep circle,
+  .spinner-container,
+  .spinner-message {
+    animation: none !important;
+  }
+}
+
+// High contrast mode
+@media (prefers-contrast: high) {
+  .spinner-container.overlay {
+    background: rgba(0, 0, 0, 0.9);
+  }
+  
+  .spinner-message {
+    color: var(--text-primary);
+    font-weight: var(--font-bold);
+  }
+}

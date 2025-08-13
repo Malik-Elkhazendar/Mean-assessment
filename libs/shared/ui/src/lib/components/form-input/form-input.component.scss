@@ -1,0 +1,291 @@
+// Clean form input styles with proper text rendering and mobile optimization
+.full-width {
+  width: 100%;
+  
+  // Fix text rendering across all form field elements
+  *, *::before, *::after {
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+}
+
+// Mobile-first form input container
+.form-input-container {
+  position: relative;
+  margin-bottom: var(--space-4);
+  
+  // Enhanced mobile spacing (explicit breakpoints)
+  @media (max-width: 768px) {
+    margin-bottom: var(--space-3);
+  }
+  
+  @media (max-width: 480px) {
+    margin-bottom: var(--space-4); // More space on small mobile for touch
+  }
+}
+
+.suffix-container {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  pointer-events: auto;
+  
+  
+  button[mat-icon-button] {
+    color: var(--color-text-secondary, #6b7280);
+    opacity: 0.7;
+    transition: opacity 0.2s ease;
+    
+    &:hover {
+      opacity: 1;
+    }
+    
+    // Remove ripple visuals on small inputs
+    .mat-ripple-element {
+      display: none !important;
+    }
+  }
+  
+  // Ensure password visibility icons are visible with proper contrast
+  mat-icon {
+    color: var(--color-text-secondary, #6b7280) !important;
+    opacity: 0.8;
+    transition: all 0.2s ease;
+    
+    &:hover {
+      opacity: 1;
+      color: var(--primary-color, #0ea5e9) !important;
+    }
+  }
+  // Prevent icon text wrapping/clipping
+  .mat-icon {
+    line-height: 1;
+    width: 24px;
+    height: 24px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+  }
+}
+
+// Ensure Material icon ligatures render as icons (not text)
+mat-icon {
+  font-family: 'Material Icons', 'Material Icons Outlined', 'Material Symbols Outlined' !important;
+  font-weight: normal;
+  font-style: normal;
+  font-size: 24px !important;
+  line-height: 1;
+  letter-spacing: normal;
+  text-transform: none;
+  display: inline-flex !important;
+  align-items: center;
+  justify-content: center;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  direction: ltr;
+  text-rendering: optimizeLegibility;
+  font-feature-settings: 'liga';
+  
+  // Force icon visibility
+  opacity: 1 !important;
+  visibility: visible !important;
+  
+  // Ensure proper size
+  width: 24px !important;
+  height: 24px !important;
+  min-width: 24px;
+  min-height: 24px;
+}
+
+.suffix-icon {
+  color: var(--color-text-secondary, #6b7280);
+}
+
+.password-toggle-icon {
+  width: 20px !important;
+  height: 20px !important;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-text-secondary, #6b7280);
+  transition: all 0.2s ease;
+  cursor: pointer;
+  
+  &:hover {
+    color: var(--primary-color, #0ea5e9);
+    transform: scale(1.1);
+  }
+  
+  // Ensure SVG fills properly
+  path, g {
+    fill: currentColor;
+  }
+}
+
+// Mobile-optimized Material form field with touch-friendly sizing
+mat-form-field {
+  font-size: var(--text-base, 16px); // 16px base for mobile accessibility
+  font-family: var(--font-family, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif);
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  width: 100%;
+  margin-bottom: var(--space-6);
+  
+  // Ensure touch-friendly input height (44px minimum)
+  .mat-mdc-text-field-wrapper {
+    min-height: 44px;
+    overflow: visible; // make sure suffix buttons are not clipped
+    
+    .mat-mdc-form-field-input-control {
+      min-height: 44px;
+      
+      input, textarea {
+        min-height: 44px;
+        padding: var(--space-3) var(--space-4);
+        font-size: var(--text-base);
+        
+        // Mobile keyboard optimization
+        @media (max-width: 768px) {
+          font-size: 16px; // Prevents zoom on iOS
+        }
+      }
+    }
+  } 
+  
+  // Fix Material Design label and input text rendering
+  .mat-mdc-floating-label {
+    font-family: inherit;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    line-height: 1.2;
+  }
+  
+  .mat-mdc-input-element {
+    font-family: inherit;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    line-height: 1.4;
+  }
+  
+  // Fix placeholder text
+  .mat-mdc-input-element::placeholder {
+    font-family: inherit;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    opacity: 0.6;
+  }
+  
+  // Fix textarea text rendering
+  textarea.mat-mdc-input-element {
+    font-family: inherit;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    line-height: 1.4;
+    resize: vertical;
+  }
+}
+
+.mat-mdc-form-field-hint,
+.mat-mdc-form-field-error {
+  font-size: var(--font-size-xs, 12px);
+  font-family: var(--font-family, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif);
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  line-height: 1.3;
+  /* Allow wrapping and prevent overlap into next control */
+  white-space: normal;
+  word-break: break-word;
+}
+
+/* Reserve vertical space for one-two lines of hint/error to avoid overlap with next field */
+.mat-mdc-form-field-subscript-wrapper {
+  min-height: 40px; /* reserve space for up to ~3 lines of text */
+  padding-top: 4px;
+}
+
+// Enhanced mobile responsiveness with proper touch targets
+@media (max-width: 768px) {
+  mat-form-field {
+    margin-bottom: var(--space-5);
+    font-size: 16px; // Prevent zoom on mobile
+    
+    .mat-mdc-text-field-wrapper {
+      min-height: 48px; // Slightly larger touch target on mobile
+      
+      .mat-mdc-form-field-input-control {
+        min-height: 48px;
+        
+        input, textarea {
+          min-height: 48px;
+          padding: var(--space-4);
+          font-size: 16px;
+        }
+      }
+    }
+    
+    .mat-mdc-floating-label {
+      font-size: 14px; // Appropriate label size for mobile
+      
+      &.mdc-floating-label--float-above {
+        font-size: 12px;
+      }
+    }
+  }
+  
+  .mat-mdc-form-field-subscript-wrapper {
+    min-height: 48px; // Space for error messages
+    padding-top: var(--space-2);
+    
+    .mat-mdc-form-field-error {
+      font-size: 14px;
+      line-height: 1.4;
+    }
+  }
+}
+
+// Extra small mobile devices
+@media (max-width: 480px) {
+  .form-input-container {
+    margin-bottom: var(--space-5);
+  }
+  
+  mat-form-field {
+    .mat-mdc-text-field-wrapper {
+      .mat-mdc-form-field-input-control {
+        input, textarea {
+          padding: var(--space-3) var(--space-3);
+        }
+      }
+    }
+  }
+}
+
+// Touch device specific optimizations
+@media (hover: none) and (pointer: coarse) {
+  mat-form-field {
+    .mat-mdc-text-field-wrapper {
+      min-height: 44px;
+      
+      .mat-mdc-form-field-input-control {
+        input, textarea {
+          min-height: 44px;
+          padding: var(--space-3) var(--space-4);
+          
+          // Enhanced touch feedback
+          &:focus {
+            outline: 2px solid var(--primary-color);
+            outline-offset: 2px;
+          }
+        }
+      }
+    }
+  }
+}

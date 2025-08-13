@@ -1,0 +1,232 @@
+<div class="product-create-container">
+
+  <!-- Page Header -->
+  <div class="page-header">
+    <div class="header-content">
+      <h1 class="page-title">{{ uiText.pageTitle }}</h1>
+      <p class="page-subtitle">{{ uiText.pageSubtitle }}</p>
+    </div>
+    
+    <div class="header-actions">
+      <ui-button
+        variant="text"
+        color="teal"
+        [content]="uiText.backButtonText"
+        (buttonClick)="onCancel()"
+        icon="arrow_back"
+        [fullWidth]="false">
+      </ui-button>
+    </div>
+  </div>
+
+  <!-- Loading State -->
+  <ui-spinner 
+    *ngIf="isSubmitting" 
+    [message]="uiText.loadingMessage">
+  </ui-spinner>
+
+  <!-- Error Alert -->
+  <ui-alert 
+    *ngIf="error && !isSubmitting"
+    type="error"
+    [dismissible]="true"
+    (dismiss)="clearError()">
+    {{ error }}
+  </ui-alert>
+
+  <!-- Success Alert -->
+  <ui-alert 
+    *ngIf="successMessage && !isSubmitting"
+    type="success"
+    [dismissible]="true"
+    (dismiss)="clearSuccess()">
+    {{ successMessage }}
+  </ui-alert>
+
+
+  
+  <!-- Product Creation Form -->
+  <div class="form-section" *ngIf="!isSubmitting">
+    <ui-card variant="outlined" class="form-card">
+      <div class="form-header">
+        <h2>{{ uiText.formTitle }}</h2>
+        <p>{{ uiText.formSubtitle }}</p>
+      </div>
+
+      <div [formGroup]="productForm" class="product-form">
+        
+        <!-- Basic Information -->
+        <div class="form-section-group">
+          <h3 class="section-title">{{ uiText.sections.basic }}</h3>
+          
+          <div class="form-row-group">
+            <div class="form-col">
+              <div class="input-with-tooltip">
+                <ui-form-input
+                  [label]="uiText.fields.name.label"
+                  [placeholder]="uiText.fields.name.placeholder"
+                  [required]="true"
+                  [control]="nameControl"
+                  [error]="getFieldError('name')"
+                  [icon]="uiText.fields.name.icon">
+                </ui-form-input>
+              </div>
+            </div>
+            <div class="form-col">
+              <div class="input-with-tooltip">
+                <ui-form-input
+                  [label]="uiText.fields.category.label"
+                  [placeholder]="uiText.fields.category.placeholder"
+                  [required]="true"
+                  [control]="categoryControl"
+                  [error]="getFieldError('category')"
+                  [icon]="uiText.fields.category.icon">
+                </ui-form-input>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="input-with-tooltip">
+              <ui-form-input
+                [label]="uiText.fields.description.label"
+                [placeholder]="uiText.fields.description.placeholder"
+                type="textarea"
+                [rows]="4"
+                [required]="true"
+                [control]="descriptionControl"
+                [error]="getFieldError('description')"
+                [icon]="uiText.fields.description.icon">
+              </ui-form-input>
+            </div>
+          </div>
+        </div>
+
+        <!-- Pricing and Inventory -->
+        <div class="form-section-group">
+          <h3 class="section-title">{{ uiText.sections.pricing }}</h3>
+          
+          <div class="form-row-group">
+            <div class="form-col">
+              <div class="input-with-tooltip">
+                <ui-form-input
+                  [label]="uiText.fields.price.label"
+                  [placeholder]="uiText.fields.price.placeholder"
+                  type="number"
+                  [step]="0.01"
+                  [min]="productLimits.PRICE_MIN"
+                  [max]="productLimits.PRICE_MAX"
+                  [required]="true"
+                  [control]="priceControl"
+                  [error]="getFieldError('price')"
+                  [icon]="uiText.fields.price.icon">
+                </ui-form-input>
+              </div>
+            </div>
+            
+            <div class="form-col">
+              <div class="input-with-tooltip">
+                <ui-form-input
+                  [label]="uiText.fields.quantity.label"
+                  [placeholder]="uiText.fields.quantity.placeholder"
+                  type="number"
+                  [step]="1"
+                  [min]="productLimits.QUANTITY_MIN"
+                  [max]="productLimits.QUANTITY_MAX"
+                  [required]="true"
+                  [control]="quantityControl"
+                  [error]="getFieldError('quantity')"
+                  [icon]="uiText.fields.quantity.icon">
+                </ui-form-input>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Additional Options -->
+        <div class="form-section-group">
+          <h3 class="section-title">{{ uiText.sections.additional }}</h3>
+          
+          <div class="form-row">
+            <div class="input-with-tooltip">
+              <ui-form-input
+                [label]="uiText.fields.imageUrl.label"
+                [placeholder]="uiText.fields.imageUrl.placeholder"
+                type="url"
+                [control]="imageUrlControl"
+                [error]="getFieldError('imageUrl')"
+                [icon]="uiText.fields.imageUrl.icon">
+              </ui-form-input>
+            </div>
+          </div>
+        </div>
+
+        <!-- Form Actions -->
+        <div class="form-actions">
+          <ui-button
+            type="button"
+            variant="text"
+            color="primary"
+            [content]="uiText.buttons.cancel"
+            (buttonClick)="onCancel()">
+          </ui-button>
+          
+          <div class="action-group-primary">
+            <ui-button
+              type="button"
+              variant="outlined"
+              color="primary"
+              [content]="uiText.buttons.saveAsDraft"
+              [disabled]="!isFormValidForDraft()"
+              (buttonClick)="saveAsDraft()">
+            </ui-button>
+            
+            <ui-button
+              type="button"
+              variant="raised"
+              color="primary"
+              [content]="uiText.buttons.createProduct"
+              [disabled]="productForm.invalid || isSubmitting"
+              (buttonClick)="onSubmit()">
+            </ui-button>
+          </div>
+        </div>
+      </div>
+    </ui-card>
+  </div>
+
+  <!-- Preview Section -->
+  <div class="preview-section" *ngIf="!isSubmitting && productForm.value.name">
+    <ui-card variant="elevated" [title]="uiText.preview.title" class="preview-card">
+      <div class="product-preview">
+        <div class="preview-header">
+          <h3>{{ productForm.value.name || uiText.preview.defaultName }}</h3>
+          <span class="preview-price">${{ productForm.value.price || '0.00' }}</span>
+        </div>
+        
+        <p class="preview-description">
+          {{ productForm.value.description || uiText.preview.noDescription }}
+        </p>
+        
+        <div class="preview-details">
+          <div class="preview-item">
+            <strong>{{ uiText.preview.categoryLabel }}</strong> 
+            <span>{{ productForm.value.category || uiText.preview.uncategorized }}</span>
+          </div>
+          <div class="preview-item">
+            <strong>{{ uiText.preview.quantityLabel }}</strong> 
+            <span>{{ productForm.value.quantity || 0 }} {{ uiText.preview.units }}</span>
+          </div>
+          <div class="preview-item">
+            <strong>{{ uiText.preview.statusLabel }}</strong> 
+            <ui-badge 
+              [variant]="(productForm.value.quantity || 0) > 0 ? 'success' : 'secondary'"
+              [content]="(productForm.value.quantity || 0) > 0 ? uiText.preview.inStock : uiText.preview.outOfStock"
+              size="small">
+            </ui-badge>
+          </div>
+        </div>
+      </div>
+    </ui-card>
+  </div>
+</div>

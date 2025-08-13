@@ -1,0 +1,165 @@
+.dashboard {
+  min-height: 100vh;
+  background: var(--background-color);
+
+  /* Full width, no constraints from parent container */
+  margin: 0;
+  width: 100%;
+
+  .dashboard-header {
+    position: sticky;
+    top: 0;
+    z-index: var(--z-sticky);
+    background: var(--surface-color);
+    border-bottom: 1px solid var(--border-color);
+    box-shadow: var(--shadow-soft);
+  }
+
+  .dashboard-content {
+    /* Full page width */
+    width: 100%;
+    max-width: 100%;
+    margin: 0;
+    padding: var(--space-10) var(--space-6); // Keep internal padding
+    box-sizing: border-box;
+    animation: fadeIn var(--transition-slow) ease-out;
+
+    section {
+      margin-bottom: var(--space-12);
+
+      &:last-child {
+        margin-bottom: 0;
+      }
+    }
+
+    .welcome-section {
+      text-align: center;
+      margin-bottom: var(--space-16);
+
+      .welcome-title {
+        font-size: var(--text-4xl);
+        font-weight: var(--font-bold);
+        color: var(--text-primary);
+        margin: 0 0 var(--space-3) 0;
+        line-height: var(--leading-tight);
+
+        @media (max-width: 768px) {
+          font-size: var(--text-3xl);
+        }
+      }
+
+      .welcome-subtitle {
+        font-size: var(--text-lg);
+        color: var(--text-secondary);
+        margin: 0;
+        font-weight: var(--font-regular);
+
+        @media (max-width: 768px) {
+          font-size: var(--text-base);
+        }
+      }
+    }
+
+    .account-section {
+      ui-account-status-card {
+        width: 100%;
+        display: block;
+      }
+    }
+
+    .activity-section {
+      ui-activity-list {
+        width: 100%;
+        display: block;
+      }
+    }
+
+    .features-section {
+      ui-feature-highlights {
+        display: block;
+      }
+    }
+  }
+
+  .loading-content {
+    width: 100%;
+    padding: var(--space-10) var(--space-6);
+
+    .loading-sections {
+      margin-top: var(--space-10);
+
+      ui-skeleton-loader {
+        margin-bottom: var(--space-6);
+
+        &:last-child {
+          margin-bottom: 0;
+        }
+      }
+
+      .loading-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: var(--space-5);
+        margin-top: var(--space-6);
+      }
+    }
+  }
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .dashboard {
+    .dashboard-content {
+      padding: var(--space-6) var(--space-4);
+
+      section {
+        margin-bottom: var(--space-8);
+      }
+
+      .welcome-section {
+        margin-bottom: var(--space-10);
+      }
+    }
+
+    .loading-content {
+      padding: var(--space-6) var(--space-4);
+
+      .loading-sections .loading-grid {
+        grid-template-columns: 1fr;
+        gap: var(--space-4);
+      }
+    }
+  }
+}
+
+@media (max-width: 480px) {
+  .dashboard {
+    .dashboard-content {
+      padding: var(--space-5) var(--space-3);
+
+      .welcome-section {
+        margin-bottom: var(--space-8);
+
+        .welcome-title {
+          font-size: var(--text-2xl);
+        }
+
+        .welcome-subtitle {
+          font-size: var(--text-sm);
+        }
+      }
+    }
+  }
+}

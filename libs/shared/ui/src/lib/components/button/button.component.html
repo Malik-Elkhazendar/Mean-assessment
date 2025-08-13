@@ -1,0 +1,199 @@
+<ng-container [ngSwitch]="variant">
+  <!-- Basic Button -->
+  <button 
+    *ngSwitchCase="'basic'"
+    mat-button
+    [color]="color !== 'basic' ? color : null"
+    [disabled]="disabled || loading"
+    [class]="getButtonClasses()"
+    [attr.aria-label]="ariaLabel"
+    [attr.aria-busy]="loading"
+    [type]="type || 'button'"
+    (click)="onClick($event)">
+    <ng-container *ngTemplateOutlet="buttonContent"></ng-container>
+  </button>
+  
+  <!-- Raised Button -->
+  <button 
+    *ngSwitchCase="'raised'"
+    mat-raised-button
+    [color]="color !== 'basic' ? color : null"
+    [disabled]="disabled || loading"
+    [class]="getButtonClasses()"
+    [attr.aria-label]="ariaLabel"
+    [attr.aria-busy]="loading"
+    [type]="type || 'button'"
+    (click)="onClick($event)">
+    <ng-container *ngTemplateOutlet="buttonContent"></ng-container>
+  </button>
+  
+  <!-- Stroked Button -->
+  <button 
+    *ngSwitchCase="'stroked'"
+    mat-stroked-button
+    [color]="color !== 'basic' ? color : null"
+    [disabled]="disabled || loading"
+    [class]="getButtonClasses()"
+    [attr.aria-label]="ariaLabel"
+    [attr.aria-busy]="loading"
+    [type]="type || 'button'"
+    (click)="onClick($event)">
+    <ng-container *ngTemplateOutlet="buttonContent"></ng-container>
+  </button>
+  
+  <!-- Flat Button -->
+  <button 
+    *ngSwitchCase="'flat'"
+    mat-flat-button
+    [color]="color !== 'basic' ? color : null"
+    [disabled]="disabled || loading"
+    [class]="getButtonClasses()"
+    [attr.aria-label]="ariaLabel"
+    [attr.aria-busy]="loading"
+    [type]="type || 'button'"
+    (click)="onClick($event)">
+    <ng-container *ngTemplateOutlet="buttonContent"></ng-container>
+  </button>
+  
+  <!-- Icon Button -->
+  <button 
+    *ngSwitchCase="'icon'"
+    mat-icon-button
+    [color]="color !== 'basic' ? color : null"
+    [disabled]="disabled || loading"
+    [class]="getButtonClasses()"
+    [attr.aria-label]="ariaLabel || ('Button with ' + icon + ' icon')"
+    [attr.aria-busy]="loading"
+    [type]="type || 'button'"
+    (click)="onClick($event)">
+    <ng-container *ngTemplateOutlet="iconContent"></ng-container>
+  </button>
+  
+  <!-- FAB -->
+  <button 
+    *ngSwitchCase="'fab'"
+    mat-fab
+    [color]="color !== 'basic' ? color : null"
+    [disabled]="disabled || loading"
+    [class]="getButtonClasses()"
+    [attr.aria-label]="ariaLabel || ('Floating action button with ' + icon + ' icon')"
+    [attr.aria-busy]="loading"
+    [type]="type || 'button'"
+    (click)="onClick($event)">
+    <ng-container *ngTemplateOutlet="iconContent"></ng-container>
+  </button>
+  
+  <!-- Mini FAB -->
+  <button 
+    *ngSwitchCase="'mini-fab'"
+    mat-mini-fab
+    [color]="color !== 'basic' ? color : null"
+    [disabled]="disabled || loading"
+    [class]="getButtonClasses()"
+    [attr.aria-label]="ariaLabel || ('Mini floating action button with ' + icon + ' icon')"
+    [attr.aria-busy]="loading"
+    [type]="type || 'button'"
+    (click)="onClick($event)">
+    <ng-container *ngTemplateOutlet="iconContent"></ng-container>
+  </button>
+  
+  <!-- Text Button (alias for basic) -->
+  <button 
+    *ngSwitchCase="'text'"
+    mat-button
+    [color]="color !== 'basic' ? color : null"
+    [disabled]="disabled || loading"
+    [class]="getButtonClasses()"
+    [attr.aria-label]="ariaLabel"
+    [attr.aria-busy]="loading"
+    [type]="type || 'button'"
+    (click)="onClick($event)">
+    <ng-container *ngTemplateOutlet="buttonContent"></ng-container>
+  </button>
+  
+  <!-- Outlined Button (alias for stroked) -->
+  <button 
+    *ngSwitchCase="'outlined'"
+    mat-stroked-button
+    [color]="color !== 'basic' ? color : null"
+    [disabled]="disabled || loading"
+    [class]="getButtonClasses()"
+    [attr.aria-label]="ariaLabel"
+    [attr.aria-busy]="loading"
+    [type]="type || 'button'"
+    (click)="onClick($event)">
+    <ng-container *ngTemplateOutlet="buttonContent"></ng-container>
+  </button>
+</ng-container>
+
+<!-- Button Content Template -->
+<ng-template #buttonContent>
+  <div class="button-content-wrapper">
+    <!-- Loading spinner -->
+    <div *ngIf="loading" class="button-loading-overlay">
+      <mat-progress-spinner
+        [diameter]="getSpinnerSize()"
+        [strokeWidth]="2"
+        mode="indeterminate"
+        class="button-spinner">
+      </mat-progress-spinner>
+    </div>
+    
+    <div class="button-content" [class.loading]="loading">
+      <!-- Icon (prefix) -->
+      <mat-icon 
+        *ngIf="icon && iconPosition === 'start'"
+        class="button-icon button-icon-start"
+        fontSet="material-icons"
+        [fontIcon]="icon"
+        [attr.aria-hidden]="true">
+      </mat-icon>
+      
+      <!-- Content -->
+      <span 
+        *ngIf="content"
+        class="button-text">
+        {{ content }}
+      </span>
+      
+      <!-- Projected content -->
+      <span *ngIf="!content" class="button-projected">
+        <ng-content></ng-content>
+      </span>
+      
+      <!-- Icon (suffix) -->
+      <mat-icon 
+        *ngIf="icon && iconPosition === 'end'"
+        class="button-icon button-icon-end"
+        fontSet="material-icons"
+        [fontIcon]="icon"
+        [attr.aria-hidden]="true">
+      </mat-icon>
+    </div>
+  </div>
+</ng-template>
+
+<!-- Icon Content Template -->
+<ng-template #iconContent>
+  <div class="button-icon-wrapper">
+    <!-- Loading spinner for icon buttons -->
+    <div *ngIf="loading" class="button-loading-overlay">
+      <mat-progress-spinner
+        [diameter]="getSpinnerSize()"
+        [strokeWidth]="2"
+        mode="indeterminate"
+        class="button-spinner">
+      </mat-progress-spinner>
+    </div>
+    
+    <!-- Icon only -->
+    <mat-icon 
+      *ngIf="icon"
+      class="button-icon-only"
+      fontSet="material-icons"
+      [fontIcon]="icon"
+      [class.loading]="loading"
+      [attr.aria-hidden]="!ariaLabel">
+    </mat-icon>
+  </div>
+</ng-template>

@@ -1,0 +1,36 @@
+<div class="feature-highlights">
+  <h3 class="highlights-title">{{ title }}</h3>
+  
+  <div class="features-grid" *ngIf="features.length > 0; else noFeatures">
+    <div class="feature-card" *ngFor="let feature of features; trackBy: trackByFeature">
+      <div class="feature-visual" *ngIf="feature.image || feature.icon">
+        <img *ngIf="feature.image" [src]="feature.image" [alt]="feature.title" class="feature-image">
+        <div *ngIf="!feature.image && feature.icon" class="feature-icon">
+          <mat-icon>{{ feature.icon }}</mat-icon>
+        </div>
+      </div>
+      
+      <div class="feature-content">
+        <h4 class="feature-title">{{ feature.title }}</h4>
+        <p class="feature-description">{{ feature.description }}</p>
+        
+        <ui-button 
+          *ngIf="feature.actionText && feature.actionLink"
+          variant="text"
+          [color]="feature.actionColor || 'teal'"
+          size="small"
+          [content]="feature.actionText"
+          [routerLink]="feature.actionLink"
+          class="feature-action">
+        </ui-button>
+      </div>
+    </div>
+  </div>
+  
+  <ng-template #noFeatures>
+    <div class="no-features">
+      <mat-icon>lightbulb_outline</mat-icon>
+      <p>No features to highlight</p>
+    </div>
+  </ng-template>
+</div>

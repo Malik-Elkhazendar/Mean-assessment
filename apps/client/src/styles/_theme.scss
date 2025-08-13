@@ -1,0 +1,566 @@
+@use '@angular/material' as mat;
+@use 'sass:math';
+
+// Include the common styles for Angular Material
+@include mat.core();
+
+// Professional Warm Beige Color Palette (Custom)
+$warm-beige-palette: (
+  50: #fdf9f0,
+  100: #faf2e1,
+  200: #f6e9c7,
+  300: #f1dcaa,
+  400: #ecd28c,
+  500: #eed7a1,  // Main brand color
+  600: #d4b887,
+  700: #b8966d,
+  800: #9c7553,
+  900: #80543a,
+  A100: #f6e9c7,
+  A200: #f1dcaa,
+  A400: #ecd28c,
+  A700: #b8966d,
+  contrast: (
+    50: rgba(0, 0, 0, 0.87),
+    100: rgba(0, 0, 0, 0.87),
+    200: rgba(0, 0, 0, 0.87),
+    300: rgba(0, 0, 0, 0.87),
+    400: rgba(0, 0, 0, 0.87),
+    500: rgba(0, 0, 0, 0.87),
+    600: rgba(0, 0, 0, 0.87),
+    700: white,
+    800: white,
+    900: white,
+    A100: rgba(0, 0, 0, 0.87),
+    A200: rgba(0, 0, 0, 0.87),
+    A400: rgba(0, 0, 0, 0.87),
+    A700: white,
+  )
+);
+
+// Warm Terracotta Accent Palette
+$warm-terracotta-palette: (
+  50: #faf6f3,
+  100: #f2e8e0,
+  200: #e8d4c5,
+  300: #dbb49a,
+  400: #d19d7e,
+  500: #cd8b62,
+  600: #b36d47,
+  700: #94542f,
+  800: #743f1a,
+  900: #542d08,
+  A100: #e8d4c5,
+  A200: #dbb49a,
+  A400: #d19d7e,
+  A700: #94542f,
+  contrast: (
+    50: rgba(0, 0, 0, 0.87),
+    100: rgba(0, 0, 0, 0.87),
+    200: rgba(0, 0, 0, 0.87),
+    300: rgba(0, 0, 0, 0.87),
+    400: rgba(0, 0, 0, 0.87),
+    500: white,
+    600: white,
+    700: white,
+    800: white,
+    900: white,
+    A100: rgba(0, 0, 0, 0.87),
+    A200: rgba(0, 0, 0, 0.87),
+    A400: rgba(0, 0, 0, 0.87),
+    A700: white,
+  )
+);
+
+// Define custom palettes
+$mean-primary: mat.m2-define-palette($warm-beige-palette, 500, 300, 700);
+$mean-accent: mat.m2-define-palette($warm-terracotta-palette, 500, 300, 700);
+$mean-warn: mat.m2-define-palette(mat.$m2-red-palette, 400, 300, 600); // Softer red
+
+// Create the professional theme
+$mean-theme: mat.m2-define-light-theme((
+  color: (
+    primary: $mean-primary,
+    accent: $mean-accent,
+    warn: $mean-warn,
+  ),
+  typography: mat.m2-define-typography-config(
+    $font-family: '"Inter", "Roboto", "Helvetica Neue", sans-serif',
+    $headline-1: mat.m2-define-typography-level(2.5rem, 1.2, 300),
+    $headline-2: mat.m2-define-typography-level(2rem, 1.3, 400),
+    $headline-3: mat.m2-define-typography-level(1.75rem, 1.4, 500),
+    $headline-4: mat.m2-define-typography-level(1.5rem, 1.4, 500),
+    $headline-5: mat.m2-define-typography-level(1.25rem, 1.5, 500),
+    $headline-6: mat.m2-define-typography-level(1.125rem, 1.5, 500),
+    $body-1: mat.m2-define-typography-level(1rem, 1.6, 400),
+    $body-2: mat.m2-define-typography-level(0.875rem, 1.5, 400),
+    $button: mat.m2-define-typography-level(0.875rem, 1.5, 500),
+    $caption: mat.m2-define-typography-level(0.75rem, 1.4, 400),
+  ),
+  density: 0,
+));
+
+// Include theme styles for core and each component used in your app
+@include mat.all-component-themes($mean-theme);
+
+// Professional Color System - CSS Custom Properties
+:root {
+  // Primary Colors (Warm Beige)
+  --primary-50: #fdf9f0;
+  --primary-100: #faf2e1;
+  --primary-200: #f6e9c7;
+  --primary-300: #f1dcaa;
+  --primary-400: #ecd28c;
+  --primary-500: #eed7a1;  // Main brand color
+  --primary-600: #d4b887;
+  --primary-700: #b8966d;
+  --primary-800: #9c7553;
+  --primary-900: #80543a;
+  
+  // Gray Scale (Soft Neutrals)
+  --gray-50: #f9fafb;
+  --gray-100: #f3f4f6;
+  --gray-200: #e5e7eb;
+  --gray-300: #d1d5db;
+  --gray-400: #9ca3af;
+  --gray-500: #6b7280;
+  --gray-600: #4b5563;
+  --gray-700: #374151;
+  --gray-800: #1f2937;
+  --gray-900: #111827;
+  
+  // Semantic Colors (Soft & Accessible)
+  --success-color: #10b981;    // Emerald 500
+  --success-light: #6ee7b7;    // Emerald 300
+  --success-dark: #059669;     // Emerald 600
+  
+  --warning-color: #f59e0b;    // Amber 500
+  --warning-light: #fcd34d;    // Amber 300
+  --warning-dark: #d97706;     // Amber 600
+  
+  --error-color: #ef4444;      // Red 500
+  --error-light: #fca5a5;      // Red 300
+  --error-dark: #dc2626;       // Red 600
+  
+  --info-color: #3b82f6;       // Blue 500
+  --info-light: #93c5fd;       // Blue 300
+  --info-dark: #2563eb;        // Blue 600
+  
+  // Main Theme Colors
+  --primary-color: var(--primary-500);
+  --primary-light: var(--primary-300);
+  --primary-dark: var(--primary-700);
+  
+  --accent-color: #cd8b62;     // Terracotta 500
+  --accent-light: #dbb49a;     // Terracotta 300
+  --accent-dark: #94542f;      // Terracotta 700
+  
+  --warn-color: var(--error-color);
+  --warn-light: var(--error-light);
+  --warn-dark: var(--error-dark);
+  
+  // Surface & Background Colors
+  --background-color: var(--gray-50);
+  --surface-color: #ffffff;
+  --surface-hover: var(--gray-100);
+  --surface-selected: var(--primary-50);
+  --surface-disabled: var(--gray-100);
+
+  // Global skeleton colors (light gray)
+  --skeleton-bg: #f1f3f5;
+  --skeleton-shimmer: #ffffff;
+  
+  // Text Colors (Professional Contrast)
+  --text-primary: var(--gray-900);
+  --text-secondary: var(--gray-600);
+  --text-tertiary: var(--gray-500);
+  --text-disabled: var(--gray-400);
+  --text-on-primary: #ffffff;
+  --text-on-surface: var(--gray-900);
+  
+  // Border & Divider Colors
+  --border-color: var(--gray-200);
+  --divider-color: var(--gray-200);
+  --focus-color: var(--primary-500);
+  
+  // Derived Surfaces (auto from existing tokens)
+  --surface-variant: color-mix(in srgb, var(--surface-color) 92%, var(--text-on-surface) 8%);
+  --panel-background: color-mix(in srgb, var(--surface-color) 94%, var(--primary-500) 6%);
+  --panel-border-color: color-mix(in srgb, var(--divider-color) 80%, var(--primary-500) 20%);
+  
+  // Professional Elevation System
+  --elevation-0: none;
+  --elevation-1: 0px 1px 2px 0px rgba(0, 0, 0, 0.05);
+  --elevation-2: 0px 1px 3px 0px rgba(0, 0, 0, 0.1), 0px 1px 2px 0px rgba(0, 0, 0, 0.06);
+  --elevation-4: 0px 4px 6px -1px rgba(0, 0, 0, 0.1), 0px 2px 4px -1px rgba(0, 0, 0, 0.06);
+  --elevation-8: 0px 10px 15px -3px rgba(0, 0, 0, 0.1), 0px 4px 6px -2px rgba(0, 0, 0, 0.05);
+  --elevation-12: 0px 20px 25px -5px rgba(0, 0, 0, 0.1), 0px 10px 10px -5px rgba(0, 0, 0, 0.04);
+  --elevation-16: 0px 25px 50px -12px rgba(0, 0, 0, 0.25);
+  
+  // Typography Scale
+  --font-family: 'Inter', 'Roboto', 'Helvetica Neue', sans-serif;
+  --font-mono: 'JetBrains Mono', 'Fira Code', 'Cascadia Code', monospace;
+  
+  // Font Weights
+  --font-light: 300;
+  --font-regular: 400;
+  --font-medium: 500;
+  --font-semibold: 600;
+  --font-bold: 700;
+  
+  // Font Sizes (Fluid scaling)
+  --text-xs: 0.75rem;      // 12px
+  --text-sm: 0.875rem;     // 14px
+  --text-base: 1rem;       // 16px
+  --text-lg: 1.125rem;     // 18px
+  --text-xl: 1.25rem;      // 20px
+  --text-2xl: 1.5rem;      // 24px
+  --text-3xl: 1.875rem;    // 30px
+  --text-4xl: 2.25rem;     // 36px
+  
+  // Line Heights
+  --leading-tight: 1.25;
+  --leading-normal: 1.5;
+  --leading-relaxed: 1.625;
+  --leading-loose: 2;
+  
+  // Spacing Scale (8px base unit)
+  --space-1: 0.25rem;      // 4px
+  --space-2: 0.5rem;       // 8px
+  --space-3: 0.75rem;      // 12px
+  --space-4: 1rem;         // 16px
+  --space-5: 1.25rem;      // 20px
+  --space-6: 1.5rem;       // 24px
+  --space-8: 2rem;         // 32px
+  --space-10: 2.5rem;      // 40px
+  --space-12: 3rem;        // 48px
+  --space-16: 4rem;        // 64px
+  --space-20: 5rem;        // 80px
+  --space-24: 6rem;        // 96px
+  --space-32: 8rem;        // 128px
+  
+  // Border Radius
+  --radius-sm: 0.25rem;    // 4px
+  --radius: 0.5rem;        // 8px
+  --radius-md: 0.75rem;    // 12px
+  --radius-lg: 1rem;       // 16px
+  --radius-xl: 1.5rem;     // 24px
+  --radius-full: 9999px;
+  
+  // Transitions & Animations (Modern)
+  --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-normal: 300ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-slow: 500ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-bounce: 600ms cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  --transition-spring: 400ms cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  
+  // Professional Glassmorphism
+  --glass-bg: rgba(255, 255, 255, 0.1);
+  --glass-border: rgba(255, 255, 255, 0.2);
+  --glass-backdrop: blur(10px);
+  
+  // Modern Gradients
+  --gradient-primary: linear-gradient(135deg, var(--primary-400) 0%, var(--primary-600) 100%);
+  --gradient-subtle: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%);
+  --gradient-surface: linear-gradient(145deg, var(--surface-color) 0%, var(--gray-50) 100%);
+  
+  // Enhanced Shadows (Soft & Modern)
+  --shadow-soft: 0 2px 8px rgba(0, 0, 0, 0.08);
+  --shadow-medium: 0 4px 16px rgba(0, 0, 0, 0.12);
+  --shadow-large: 0 8px 32px rgba(0, 0, 0, 0.16);
+  --shadow-hover: 0 8px 24px rgba(0, 0, 0, 0.15);
+  --shadow-focus: 0 0 0 3px rgba(238, 215, 161, 0.3);
+  
+  // Z-index Scale
+  --z-dropdown: 1000;
+  --z-sticky: 1020;
+  --z-fixed: 1030;
+  --z-modal: 1050;
+  --z-popover: 1060;
+  --z-tooltip: 1070;
+  --z-toast: 1080;
+
+  // Responsive Breakpoint System (Mobile-First)
+  --breakpoint-xs: 0;          // Extra small devices
+  --breakpoint-sm: 576px;      // Small devices (landscape phones)
+  --breakpoint-md: 768px;      // Medium devices (tablets)
+  --breakpoint-lg: 1024px;     // Large devices (desktop)
+  --breakpoint-xl: 1280px;     // Extra large devices
+  --breakpoint-2xl: 1536px;    // 2X large devices
+
+  // Container max-widths for each breakpoint
+  --container-xs: 100%;
+  --container-sm: 540px;
+  --container-md: 720px;
+  --container-lg: 960px;
+  --container-xl: 1140px;
+  --container-2xl: 1320px;
+
+  // Grid system
+  --grid-columns: 12;
+  --grid-gutter: var(--space-6);  // 24px default gutter
+  --grid-gutter-sm: var(--space-4);  // 16px on smaller screens
+}
+
+// Professional Dark Theme Support
+[data-theme="dark"] {
+  // Dark Theme Colors
+  --background-color: #0f172a;     // Slate 900
+  --surface-color: #1e293b;        // Slate 800
+  --surface-hover: #334155;        // Slate 700
+  --surface-selected: #475569;     // Slate 600
+  --surface-disabled: #374151;     // Gray 700
+  
+  // Dark Text Colors
+  --text-primary: #f8fafc;         // Slate 50
+  --text-secondary: #cbd5e1;       // Slate 300
+  --text-tertiary: #94a3b8;        // Slate 400
+  --text-disabled: #64748b;        // Slate 500
+  --text-on-primary: #ffffff;
+  --text-on-surface: #f8fafc;
+  
+  // Dark Borders & Dividers
+  --border-color: #475569;         // Slate 600
+  --divider-color: #334155;        // Slate 700
+  
+  // Adjusted elevation for dark theme
+  --elevation-1: 0px 1px 2px 0px rgba(0, 0, 0, 0.3);
+  --elevation-2: 0px 1px 3px 0px rgba(0, 0, 0, 0.4), 0px 1px 2px 0px rgba(0, 0, 0, 0.2);
+  --elevation-4: 0px 4px 6px -1px rgba(0, 0, 0, 0.4), 0px 2px 4px -1px rgba(0, 0, 0, 0.2);
+  --elevation-8: 0px 10px 15px -3px rgba(0, 0, 0, 0.4), 0px 4px 6px -2px rgba(0, 0, 0, 0.2);
+  --elevation-12: 0px 20px 25px -5px rgba(0, 0, 0, 0.4), 0px 10px 10px -5px rgba(0, 0, 0, 0.2);
+  --elevation-16: 0px 25px 50px -12px rgba(0, 0, 0, 0.5);
+  
+  // Design System Colors (matching provided design)
+  --warm-beige-50: #fbfbf8;
+  --warm-beige-100: #f5f3ec;
+  --warm-beige-200: #e6e0d1;
+  --warm-beige-300: #f1db9d;
+  --warm-beige-400: #e8d088;
+  
+  --warm-brown-600: #958350;
+  --warm-brown-700: #7a6b42;
+  --warm-brown-800: #5f5234;
+  --warm-brown-900: #1b170e;
+}
+
+// Responsive Breakpoint Mixins (Mobile-First Approach)
+@mixin breakpoint-up($size) {
+  @if $size == 'xs' {
+    @media (min-width: 0) { @content; }
+  }
+  @if $size == 'sm' {
+    @media (min-width: 576px) { @content; }
+  }
+  @if $size == 'md' {
+    @media (min-width: 768px) { @content; }
+  }
+  @if $size == 'lg' {
+    @media (min-width: 1024px) { @content; }
+  }
+  @if $size == 'xl' {
+    @media (min-width: 1280px) { @content; }
+  }
+  @if $size == '2xl' {
+    @media (min-width: 1536px) { @content; }
+  }
+}
+
+@mixin breakpoint-down($size) {
+  @if $size == 'xs' {
+    @media (max-width: 575.98px) { @content; }
+  }
+  @if $size == 'sm' {
+    @media (max-width: 767.98px) { @content; }
+  }
+  @if $size == 'md' {
+    @media (max-width: 1023.98px) { @content; }
+  }
+  @if $size == 'lg' {
+    @media (max-width: 1279.98px) { @content; }
+  }
+  @if $size == 'xl' {
+    @media (max-width: 1535.98px) { @content; }
+  }
+}
+
+@mixin breakpoint-between($lower, $upper) {
+  @if $lower == 'xs' and $upper == 'sm' {
+    @media (min-width: 0) and (max-width: 767.98px) { @content; }
+  }
+  @if $lower == 'sm' and $upper == 'md' {
+    @media (min-width: 576px) and (max-width: 1023.98px) { @content; }
+  }
+  @if $lower == 'md' and $upper == 'lg' {
+    @media (min-width: 768px) and (max-width: 1279.98px) { @content; }
+  }
+  @if $lower == 'lg' and $upper == 'xl' {
+    @media (min-width: 1024px) and (max-width: 1535.98px) { @content; }
+  }
+}
+
+// Container Utility Classes
+.container {
+  width: 100%;
+  padding-left: var(--space-4);
+  padding-right: var(--space-4);
+  margin-left: auto;
+  margin-right: auto;
+
+  @include breakpoint-up('sm') {
+    max-width: var(--container-sm);
+    padding-left: var(--space-6);
+    padding-right: var(--space-6);
+  }
+
+  @include breakpoint-up('md') {
+    max-width: var(--container-md);
+  }
+
+  @include breakpoint-up('lg') {
+    max-width: var(--container-lg);
+  }
+
+  @include breakpoint-up('xl') {
+    max-width: var(--container-xl);
+  }
+
+  @include breakpoint-up('2xl') {
+    max-width: var(--container-2xl);
+  }
+}
+
+// Responsive Display Utilities
+.d-none { display: none !important; }
+.d-block { display: block !important; }
+.d-flex { display: flex !important; }
+.d-grid { display: grid !important; }
+
+// Responsive display utilities for each breakpoint
+@each $breakpoint in ('xs', 'sm', 'md', 'lg', 'xl', '2xl') {
+  @include breakpoint-up($breakpoint) {
+    .d-#{$breakpoint}-none { display: none !important; }
+    .d-#{$breakpoint}-block { display: block !important; }
+    .d-#{$breakpoint}-flex { display: flex !important; }
+    .d-#{$breakpoint}-grid { display: grid !important; }
+  }
+}
+
+// Responsive Spacing Utilities (Mobile-First)
+.p-0 { padding: 0 !important; }
+.p-1 { padding: var(--space-1) !important; }
+.p-2 { padding: var(--space-2) !important; }
+.p-3 { padding: var(--space-3) !important; }
+.p-4 { padding: var(--space-4) !important; }
+.p-6 { padding: var(--space-6) !important; }
+.p-8 { padding: var(--space-8) !important; }
+
+.m-0 { margin: 0 !important; }
+.m-1 { margin: var(--space-1) !important; }
+.m-2 { margin: var(--space-2) !important; }
+.m-3 { margin: var(--space-3) !important; }
+.m-4 { margin: var(--space-4) !important; }
+.m-6 { margin: var(--space-6) !important; }
+.m-8 { margin: var(--space-8) !important; }
+
+// Responsive Text Utilities
+.text-center { text-align: center !important; }
+.text-left { text-align: left !important; }
+.text-right { text-align: right !important; }
+
+@each $breakpoint in ('sm', 'md', 'lg', 'xl', '2xl') {
+  @include breakpoint-up($breakpoint) {
+    .text-#{$breakpoint}-center { text-align: center !important; }
+    .text-#{$breakpoint}-left { text-align: left !important; }
+    .text-#{$breakpoint}-right { text-align: right !important; }
+  }
+}
+
+// Responsive Grid System
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  margin-left: calc(var(--grid-gutter) * -0.5);
+  margin-right: calc(var(--grid-gutter) * -0.5);
+
+  @include breakpoint-down('sm') {
+    margin-left: calc(var(--grid-gutter-sm) * -0.5);
+    margin-right: calc(var(--grid-gutter-sm) * -0.5);
+  }
+}
+
+.col {
+  flex: 1 0 0%;
+  padding-left: calc(var(--grid-gutter) * 0.5);
+  padding-right: calc(var(--grid-gutter) * 0.5);
+
+  @include breakpoint-down('sm') {
+    padding-left: calc(var(--grid-gutter-sm) * 0.5);
+    padding-right: calc(var(--grid-gutter-sm) * 0.5);
+  }
+}
+
+// Generate responsive column classes
+@for $i from 1 through 12 {
+  .col-#{$i} {
+    flex: 0 0 auto;
+    width: #{math.div($i, 12) * 100%};
+    padding-left: calc(var(--grid-gutter) * 0.5);
+    padding-right: calc(var(--grid-gutter) * 0.5);
+
+    @include breakpoint-down('sm') {
+      padding-left: calc(var(--grid-gutter-sm) * 0.5);
+      padding-right: calc(var(--grid-gutter-sm) * 0.5);
+    }
+  }
+}
+
+// Responsive column classes for each breakpoint
+@each $breakpoint in ('sm', 'md', 'lg', 'xl', '2xl') {
+  @include breakpoint-up($breakpoint) {
+    @for $i from 1 through 12 {
+      .col-#{$breakpoint}-#{$i} {
+        flex: 0 0 auto;
+        width: #{math.div($i, 12) * 100%};
+      }
+    }
+  }
+}
+
+// Modern Responsive Utilities
+.flex-column { flex-direction: column !important; }
+.flex-row { flex-direction: row !important; }
+
+@each $breakpoint in ('sm', 'md', 'lg', 'xl', '2xl') {
+  @include breakpoint-up($breakpoint) {
+    .flex-#{$breakpoint}-column { flex-direction: column !important; }
+    .flex-#{$breakpoint}-row { flex-direction: row !important; }
+  }
+}
+
+// Touch-Friendly Adjustments (Mobile Enhancement)
+@media (hover: none) and (pointer: coarse) {
+  // Enhanced touch targets
+  button, 
+  [role="button"], 
+  input[type="button"], 
+  input[type="submit"] {
+    min-height: 44px;
+    min-width: 44px;
+  }
+
+  // Better spacing on touch devices
+  .container {
+    padding-left: var(--space-4);
+    padding-right: var(--space-4);
+  }
+}
+
+// High DPI Display Support
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+  // Crisp rendering for high DPI displays
+  * {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+}

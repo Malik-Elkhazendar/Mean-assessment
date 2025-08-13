@@ -1,0 +1,23 @@
+<div class="welcome-header">
+  <div class="welcome-content">
+    <div class="welcome-text-section">
+      <h1 class="welcome-title">
+        {{ title }}, {{ displayName }}!
+      </h1>
+      <p class="welcome-subtitle">
+        {{ subtitle }}
+      </p>
+    </div>
+    <div class="welcome-stats" *ngIf="membershipDate">
+      <div class="stat-badge">
+        <ui-tooltip [content]="memberSinceTooltip || ('You have been a member since ' + formatDate(membershipDate))">
+          <ui-badge 
+            variant="info"
+            [content]="memberSinceLabel + ': ' + formatDate(membershipDate)"
+            size="medium">
+          </ui-badge>
+        </ui-tooltip>
+      </div>
+    </div>
+  </div>
+</div>
