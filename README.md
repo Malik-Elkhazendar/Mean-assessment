@@ -105,6 +105,10 @@ npx nx build client --configuration=production
 
 ##  Live Demo
 
+- **Frontend**: https://mean-frontend-6690529964.us-central1.run.app/
+- **API Docs (Swagger)**: https://mean-backend-6690529964.me-central1.run.app/docs#/
+- **Video Walkthrough**: https://drive.google.com/file/d/1gUHbDM-XbbgbEAfDhtdL23xJsYsE--Cc/view?usp=sharing
+
 The application includes sample data and is ready for demonstration with full authentication and product management workflows.
 
 ---
