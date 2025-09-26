@@ -29,6 +29,12 @@ Create `apps/server/.env`:
 MONGODB_URI=mongodb+srv://your-connection-string
 JWT_SECRET=your-secret-key
 JWT_EXPIRES_IN=8h
+JWT_ACCESS_EXPIRES_IN=15m
+SESSION_TTL_MS=28800000
+REFRESH_TOKEN_TTL_MS=900000
+COOKIE_DOMAIN=localhost
+COOKIE_SECURE=false
+COOKIE_SAMESITE=Lax
 MAIL_HOST=sandbox.smtp.mailtrap.io
 MAIL_PORT=2525
 MAIL_USER=your-username
@@ -67,9 +73,10 @@ libs/shared/          # Shared libraries
 ## 🔐 Authentication Flow
 
 1. **Signup/Signin**: JWT tokens with 8-hour expiry
-2. **Protected Routes**: Dashboard and products require authentication
-3. **Session Persistence**: Tokens stored in localStorage
-4. **Password Reset**: Email-based token reset system
+2. **Refresh Tokens**: HttpOnly cookie rotation keeps sessions alive for up to 8 hours total
+3. **Protected Routes**: Dashboard and products require authentication
+4. **Session Persistence**: Access token stored client-side, refresh token stays in cookie
+5. **Password Reset**: Email-based token reset system
 
 ## 📦 Product Features
 
