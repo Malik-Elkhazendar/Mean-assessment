@@ -20,6 +20,7 @@ import { ConfigService } from '@nestjs/config';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { AppModule } from './app/app.module';
 import { WinstonLoggerService } from './core/logger/winston-logger.service';
+import cookieParser from 'cookie-parser';
 
 /**
  * Bootstrap function that initializes and configures the NestJS application
@@ -34,6 +35,9 @@ async function bootstrap(): Promise<void> {
   const logger = app.get(WinstonLoggerService);
   
   app.useLogger(logger);
+  
+  // Parse cookies for HttpOnly refresh token handling
+  app.use(cookieParser());
   
   const globalPrefix = configService.get<string>('app.globalPrefix');
   const port = configService.get<number>('app.port');

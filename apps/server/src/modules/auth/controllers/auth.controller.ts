@@ -5,7 +5,8 @@ import {
   HttpCode, 
   UseGuards,
   Request,
-  ValidationPipe
+  ValidationPipe,
+  Res
 } from '@nestjs/common';
 import { Throttle } from '@nestjs/throttler';
 import { 
@@ -25,6 +26,7 @@ import {
   AuthenticatedAuthRequest, 
   AuthMessageResponse
 } from '../interfaces/auth-request.interface';
+import type { Response } from 'express';
 
 import { 
   AuthResponseDto,
@@ -76,8 +78,16 @@ export class AuthController {
   async signup(
     @Body(ValidationPipe) signupDto: SignupDto,
     @Request() request: AuthRequest,
+    @Res({ passthrough: true }) response: Response,
   ): Promise<AuthResponse> {
-    return await this.authService.signup(signupDto, request.correlationId);
+    const authResponse = await this.authService.signup(signupDto, request.correlationId);
+    const session = await this.authService.createSession(
+      { id: authResponse.user.id },
+      this.buildSessionMetadata(request),
+      request.correlationId,
+    );
+    this.authService.setRefreshCookie(response, session.cookieValue);
+    return authResponse;
   }
 
   /**
@@ -118,8 +128,51 @@ export class AuthController {
   async signin(
     @Body(ValidationPipe) loginDto: LoginDto,
     @Request() request: AuthRequest,
+    @Res({ passthrough: true }) response: Response,
   ): Promise<AuthResponse> {
-    return await this.authService.signin(loginDto, request.correlationId);
+    const authResponse = await this.authService.signin(loginDto, request.correlationId);
+    const session = await this.authService.createSession(
+      { id: authResponse.user.id },
+      this.buildSessionMetadata(request),
+      request.correlationId,
+    );
+    this.authService.setRefreshCookie(response, session.cookieValue);
+    return authResponse;
+  }
+
+  /**
+   * POST /auth/refresh - Rotate refresh token and issue new access token
+   */
+  @ApiOperation({
+    summary: 'Refresh access token',
+    description: 'Rotates the refresh token and returns a new access token. Requires valid refresh cookie.',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Access token refreshed successfully',
+    type: AuthResponseDto,
+  })
+  @ApiResponse({
+    status: 401,
+    description: 'Invalid or expired refresh token',
+    type: ErrorResponseDto,
+  })
+
+  @Post('refresh')
+  @HttpCode(HTTP_STATUS.OK)
+  @Throttle({ default: { ttl: 60000, limit: 10 } })
+  async refresh(
+    @Request() request: AuthRequest,
+    @Res({ passthrough: true }) response: Response,
+  ): Promise<AuthResponse> {
+    const refreshCookie = this.getRefreshCookie(request);
+    const { authResponse, newCookieValue } = await this.authService.refreshSession(
+      refreshCookie,
+      this.buildSessionMetadata(request),
+      request.correlationId,
+    );
+    this.authService.setRefreshCookie(response, newCookieValue);
+    return authResponse;
   }
 
   /**
@@ -146,8 +199,17 @@ export class AuthController {
   @UseGuards(JwtAuthGuard)
   async signout(
     @Request() request: AuthenticatedAuthRequest,
+    @Res({ passthrough: true }) response: Response,
   ): Promise<AuthMessageResponse> {
-    return await this.authService.signout(request.user.id, request.correlationId);
+    const refreshCookie = this.getRefreshCookie(request);
+    const result = await this.authService.signout(
+      request.user.id,
+      request.correlationId,
+      refreshCookie,
+    );
+
+    this.authService.clearRefreshCookie(response);
+    return result;
   }
 
   // User profile management is handled by UserController (/users/profile/me)
@@ -225,5 +287,21 @@ export class AuthController {
     @Request() request: AuthRequest,
   ): Promise<AuthMessageResponse> {
     return await this.authService.resetPassword(resetPasswordDto, request.correlationId);
+  }
+
+  /**
+   * Build session metadata from request headers for auditing
+   */
+  private buildSessionMetadata(request: AuthRequest): { ip?: string | null; userAgent?: string | null; device?: string | null } {
+    return {
+      ip: request.ip ?? null,
+      userAgent: request.get('user-agent') ?? null,
+      device: request.get('x-device-id') ?? null,
+    };
+  }
+
+  private getRefreshCookie(request: AuthRequest): string | undefined {
+    const cookies = (request as AuthRequest & { cookies?: Record<string, string> }).cookies;
+    return cookies?.rt;
   }
 }

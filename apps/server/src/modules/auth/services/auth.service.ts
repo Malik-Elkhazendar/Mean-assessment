@@ -8,6 +8,12 @@ import { SignupDto, LoginDto, ResetPasswordDto } from '@mean-assessment/dto';
 import { User, AuthResponse } from '@mean-assessment/data-models';
 import { AuthMessageResponse } from '../interfaces/auth-request.interface';
 import { ERROR_MESSAGES, TOKEN_EXPIRY, SUCCESS_MESSAGES } from '@mean-assessment/constants';
+import { InjectModel } from '@nestjs/mongoose';
+import { Model } from 'mongoose';
+import { RefreshTokenDocument, RefreshTokenEntity } from '../schemas/refresh-token.schema';
+import * as bcrypt from 'bcrypt';
+import { randomBytes } from 'crypto';
+import type { Response } from 'express';
 
 /**
  * JWT token payload interface
@@ -35,6 +41,8 @@ export class AuthService {
     private readonly configService: ConfigService,
     private readonly emailService: EmailService,
     private readonly logger: WinstonLoggerService,
+    @InjectModel(RefreshTokenEntity.name)
+    private readonly refreshTokenModel: Model<RefreshTokenDocument>,
   ) {}
 
   /**
@@ -60,20 +68,13 @@ export class AuthService {
       // Update last login timestamp
       await this.userService.updateLastLogin(user.id, correlationId);
 
-      const authResponse: AuthResponse = {
-        user: {
-          id: user.id,
-          email: user.email,
-          firstName: user.firstName,
-          lastName: user.lastName,
-          isActive: user.isActive,
-          createdAt: user.createdAt,
+      const authResponse = this.buildAuthResponse(
+        {
+          ...user,
           lastLoginAt: new Date(),
         },
         accessToken,
-        expiresIn: TOKEN_EXPIRY.DURATION,
-        tokenType: 'Bearer',
-      };
+      );
 
       this.logger.log('User signup completed successfully', {
         ...logContext,
@@ -121,20 +122,13 @@ export class AuthService {
       // Update last login timestamp
       await this.userService.updateLastLogin(user.id, correlationId);
 
-      const authResponse: AuthResponse = {
-        user: {
-          id: user.id,
-          email: user.email,
-          firstName: user.firstName,
-          lastName: user.lastName,
-          isActive: user.isActive,
-          createdAt: user.createdAt,
+      const authResponse = this.buildAuthResponse(
+        {
+          ...user,
           lastLoginAt: new Date(),
         },
         accessToken,
-        expiresIn: TOKEN_EXPIRY.DURATION,
-        tokenType: 'Bearer',
-      };
+      );
 
       this.logger.log('User signin completed successfully', {
         ...logContext,
@@ -155,11 +149,9 @@ export class AuthService {
   }
 
   /**
-   * Sign out user (stateless JWT implementation)
-   * For stateless JWT, signout is primarily handled on the client side
-   * This endpoint provides audit logging and potential future token blacklisting
+   * Sign out user and revoke refresh session if provided
    */
-  async signout(userId: string, correlationId?: string): Promise<AuthMessageResponse> {
+  async signout(userId: string, correlationId?: string, refreshCookie?: string): Promise<AuthMessageResponse> {
     const logContext = {
       correlationId,
       component: 'AuthService',
@@ -177,10 +169,15 @@ export class AuthService {
         throw new UnauthorizedException(ERROR_MESSAGES.AUTH.USER_NOT_FOUND);
       }
 
+      const refreshTokenId = this.extractRefreshTokenId(refreshCookie);
+      if (refreshTokenId) {
+        await this.revokeSessionFamily(refreshTokenId, correlationId);
+      }
+
       // Log successful signout for audit purposes
       this.logger.log('User signed out successfully', {
         ...logContext,
-        metadata: { ...logContext.metadata, email: user.email }
+        metadata: { ...logContext.metadata, email: user.email, refreshRevoked: Boolean(refreshTokenId) }
       });
 
       return {
@@ -221,7 +218,7 @@ export class AuthService {
 
     try {
       const token = await this.jwtService.signAsync(payload, {
-        expiresIn: this.configService.get<string>('auth.jwtExpiresIn'),
+        expiresIn: this.configService.get<string>('auth.jwtAccessExpiresIn'),
         secret: this.configService.get<string>('auth.jwtSecret'),
       });
 
@@ -231,6 +228,261 @@ export class AuthService {
       this.logger.error('JWT token generation failed', error, logContext);
       throw new BadRequestException(ERROR_MESSAGES.GENERAL.SERVER_ERROR);
     }
+  }
+
+  /**
+   * Create a refresh session and return cookie value (id.opaque)
+   */
+  async createSession(
+    user: Pick<User, 'id'>,
+    meta?: { ip?: string | null; userAgent?: string | null; device?: string | null },
+    correlationId?: string,
+  ): Promise<{ cookieValue: string; tokenId: string; expiresAt: Date; sessionExpiresAt: Date }>{
+    const logContext = {
+      correlationId,
+      component: 'AuthService',
+      metadata: { action: 'createSession', userId: user.id }
+    };
+
+    try {
+      const refreshTtlMs = this.configService.get<number>('auth.refreshTokenTtlMs');
+      const sessionTtlMs = this.configService.get<number>('auth.sessionTtlMs');
+      const bcryptRounds = this.configService.get<number>('auth.bcryptRounds') ?? 12;
+
+      const now = Date.now();
+      const expiresAt = new Date(now + refreshTtlMs);
+      const sessionExpiresAt = new Date(now + sessionTtlMs);
+
+      const opaque = this.generateOpaqueToken();
+      const tokenHash = await bcrypt.hash(opaque, bcryptRounds);
+
+      const doc = await this.refreshTokenModel.create({
+        userId: user.id,
+        tokenHash,
+        expiresAt,
+        sessionExpiresAt,
+        revokedAt: null,
+        replacedById: null,
+        ip: meta?.ip ?? null,
+        userAgent: meta?.userAgent ?? null,
+        device: meta?.device ?? null,
+      });
+
+      const cookieValue = `${doc.id}.${opaque}`;
+
+      this.logger.log('Refresh session created', {
+        ...logContext,
+        metadata: { ...logContext.metadata, tokenId: doc.id }
+      });
+
+      return { cookieValue, tokenId: doc.id, expiresAt, sessionExpiresAt };
+    } catch (error) {
+      this.logger.error('Failed to create refresh session', error, logContext);
+      throw new BadRequestException(ERROR_MESSAGES.GENERAL.SOMETHING_WENT_WRONG);
+    }
+  }
+
+  /**
+   * Set HttpOnly refresh cookie using config-driven attributes
+   */
+  setRefreshCookie(res: Response, cookieValue: string): void {
+    const refreshTtlMs = this.configService.get<number>('auth.refreshTokenTtlMs');
+    const cookieCfg = this.configService.get('auth.cookie') as {
+      domain: string;
+      secure: boolean;
+      sameSite: 'lax' | 'strict' | 'none';
+      path: string;
+    };
+
+    res.cookie('rt', cookieValue, {
+      httpOnly: true,
+      secure: cookieCfg.secure,
+      sameSite: cookieCfg.sameSite,
+      domain: cookieCfg.domain,
+      path: cookieCfg.path,
+      maxAge: refreshTtlMs,
+    });
+  }
+
+  /**
+   * Clear the HttpOnly refresh cookie
+   */
+  clearRefreshCookie(res: Response): void {
+    const cookieCfg = this.configService.get('auth.cookie') as {
+      domain: string;
+      secure: boolean;
+      sameSite: 'lax' | 'strict' | 'none';
+      path: string;
+    };
+
+    res.clearCookie('rt', {
+      httpOnly: true,
+      secure: cookieCfg.secure,
+      sameSite: cookieCfg.sameSite,
+      domain: cookieCfg.domain,
+      path: cookieCfg.path,
+    });
+  }
+
+  /**
+   * Refresh session by rotating the refresh token and returning a new access token
+   */
+  async refreshSession(
+    cookieValue: string | undefined,
+    meta?: { ip?: string | null; userAgent?: string | null; device?: string | null },
+    correlationId?: string,
+  ): Promise<{ authResponse: AuthResponse; newCookieValue: string }>{
+    const logContext = {
+      correlationId,
+      component: 'AuthService',
+      metadata: { action: 'refreshSession' }
+    };
+
+    try {
+      if (!cookieValue || !cookieValue.includes('.')) {
+        throw new UnauthorizedException(ERROR_MESSAGES.AUTH.TOKEN_INVALID);
+      }
+
+      const [tokenId, opaque] = cookieValue.split('.', 2);
+      const tokenDoc = await this.refreshTokenModel.findById(tokenId).select('+tokenHash').exec();
+
+      if (!tokenDoc) {
+        throw new UnauthorizedException(ERROR_MESSAGES.AUTH.TOKEN_INVALID);
+      }
+
+      const now = new Date();
+
+      // Reuse detection: token already revoked means it was rotated; any reuse is suspicious
+      if (tokenDoc.revokedAt) {
+        await this.revokeSessionFamily(tokenDoc.id, correlationId);
+        throw new UnauthorizedException(ERROR_MESSAGES.AUTH.TOKEN_INVALID);
+      }
+
+      // Check expirations
+      if (tokenDoc.expiresAt <= now || tokenDoc.sessionExpiresAt <= now) {
+        await this.revokeSessionFamily(tokenDoc.id, correlationId);
+        throw new UnauthorizedException(ERROR_MESSAGES.AUTH.TOKEN_EXPIRED);
+      }
+
+      // Verify the opaque token matches stored hash
+      const valid = await bcrypt.compare(opaque, tokenDoc.tokenHash);
+      if (!valid) {
+        await this.revokeSessionFamily(tokenDoc.id, correlationId);
+        throw new UnauthorizedException(ERROR_MESSAGES.AUTH.TOKEN_INVALID);
+      }
+
+      // Load user to issue new access token
+      const user = await this.userService.findById(tokenDoc.userId, correlationId);
+      if (!user) {
+        await this.revokeSessionFamily(tokenDoc.id, correlationId);
+        throw new UnauthorizedException(ERROR_MESSAGES.AUTH.USER_NOT_FOUND);
+      }
+
+      // Rotate: revoke current, create new with same sessionExpiresAt
+      const refreshTtlMs = this.configService.get<number>('auth.refreshTokenTtlMs');
+      const bcryptRounds = this.configService.get<number>('auth.bcryptRounds') ?? 12;
+
+      const newOpaque = this.generateOpaqueToken();
+      const newHash = await bcrypt.hash(newOpaque, bcryptRounds);
+
+      const newDoc = await this.refreshTokenModel.create({
+        userId: user.id,
+        tokenHash: newHash,
+        expiresAt: new Date(Date.now() + refreshTtlMs),
+        sessionExpiresAt: tokenDoc.sessionExpiresAt,
+        revokedAt: null,
+        replacedById: null,
+        ip: meta?.ip ?? null,
+        userAgent: meta?.userAgent ?? null,
+        device: meta?.device ?? null,
+      });
+
+      // Link rotation and revoke old token
+      tokenDoc.replacedById = newDoc.id;
+      tokenDoc.revokedAt = new Date();
+      await tokenDoc.save();
+
+      const accessToken = await this.generateToken(user);
+      const authResponse = this.buildAuthResponse(user, accessToken);
+      const newCookieValue = `${newDoc.id}.${newOpaque}`;
+
+      this.logger.log('Session refreshed successfully', {
+        ...logContext,
+        metadata: { ...logContext.metadata, userId: user.id, oldTokenId: tokenDoc.id, newTokenId: newDoc.id }
+      });
+
+      return { authResponse, newCookieValue };
+    } catch (error) {
+      if (error instanceof UnauthorizedException || error instanceof BadRequestException) {
+        throw error;
+      }
+
+      this.logger.error('Refresh session failed', error, {
+        correlationId,
+        component: 'AuthService',
+        metadata: { action: 'refreshSession' }
+      });
+      throw new BadRequestException(ERROR_MESSAGES.GENERAL.SOMETHING_WENT_WRONG);
+    }
+  }
+
+  /**
+   * Revoke all active refresh tokens for the token's user (family revocation)
+   */
+  async revokeSessionFamily(tokenId: string, correlationId?: string): Promise<void> {
+    const tokenDoc = await this.refreshTokenModel.findById(tokenId).exec();
+    if (!tokenDoc) return;
+
+    const now = new Date();
+    await this.refreshTokenModel.updateMany(
+      { userId: tokenDoc.userId, revokedAt: null },
+      { $set: { revokedAt: now } }
+    ).exec();
+
+    this.logger.warn('Refresh token family revoked', {
+      correlationId,
+      component: 'AuthService',
+      metadata: { action: 'revokeSessionFamily', userId: tokenDoc.userId }
+    });
+  }
+
+  /** Generate a URL-safe opaque token string */
+  private generateOpaqueToken(): string {
+    // 64 bytes => 128 hex chars; sufficiently random
+    return randomBytes(64).toString('hex');
+  }
+
+  /**
+   * Build consistent AuthResponse payloads
+   */
+  private buildAuthResponse(user: User, accessToken: string): AuthResponse {
+    return {
+      user: {
+        id: user.id,
+        email: user.email,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        isActive: user.isActive,
+        createdAt: user.createdAt,
+        lastLoginAt: user.lastLoginAt,
+      },
+      accessToken,
+      expiresIn: TOKEN_EXPIRY.DURATION,
+      tokenType: 'Bearer',
+    };
+  }
+
+  private extractRefreshTokenId(cookieValue?: string): string | null {
+    if (!cookieValue) {
+      return null;
+    }
+
+    const delimiterIndex = cookieValue.indexOf('.');
+    if (delimiterIndex <= 0) {
+      return null;
+    }
+
+    return cookieValue.slice(0, delimiterIndex) || null;
   }
 
   /**
