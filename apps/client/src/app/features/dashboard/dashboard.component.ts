@@ -54,6 +54,9 @@ export class DashboardComponent {
   // Session expiry text observable (updates every minute)
   sessionExpiry$ = timer(0, 60_000).pipe(map(() => this.getSessionExpiryText()));
 
+  // Access token expiry text observable (shorter lifetime)
+  accessTokenExpiry$ = timer(0, 30_000).pipe(map(() => this.getAccessTokenExpiryText()));
+
   private getTokenExpirationMs(): number | null {
     try {
       const key = this.authConfig.auth.tokenExpirationKey;
@@ -61,6 +64,18 @@ export class DashboardComponent {
       if (!raw) return null;
       const ts = parseInt(raw, 10);
       return isNaN(ts) ? null : ts;
+    } catch {
+      return null;
+    }
+  }
+
+  private getAccessTokenExpirationMs(): number | null {
+    try {
+      const key = this.authConfig.auth.accessTokenExpirationKey;
+      const raw = localStorage.getItem(key);
+      if (!raw) return null;
+      const ts = parseInt(raw, 10);
+      return Number.isNaN(ts) ? null : ts;
     } catch {
       return null;
     }
@@ -76,6 +91,18 @@ export class DashboardComponent {
     const minutes = totalMinutes % 60;
     return hours > 0 ? `${hours}h ${minutes}m remaining` : `${minutes}m remaining`;
   }
+
+  private getAccessTokenExpiryText(): string {
+    const expiresAt = this.getAccessTokenExpirationMs();
+    if (!expiresAt) return 'N/A';
+    const remainingMs = expiresAt - Date.now();
+    if (remainingMs <= 0) return 'Expired';
+    const totalSeconds = Math.floor(remainingMs / 1000);
+    const minutes = Math.floor(totalSeconds / 60);
+    const seconds = totalSeconds % 60;
+    return minutes > 0 ? `${minutes}m ${seconds.toString().padStart(2, '0')}s remaining` : `${seconds}s remaining`;
+  }
+
 
   /**
    * Navigation methods

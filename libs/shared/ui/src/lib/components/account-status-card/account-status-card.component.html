@@ -27,6 +27,10 @@
         <span class="label">Session Expires In:</span>
         <span class="value">{{ sessionExpiresIn }}</span>
       </div>
+      <div class="info-item" *ngIf="accessTokenExpiresIn">
+        <span class="label">Access Token Expires In:</span>
+        <span class="value">{{ accessTokenExpiresIn }}</span>
+      </div>
     </div>
   </mat-card-content>
 </mat-card>

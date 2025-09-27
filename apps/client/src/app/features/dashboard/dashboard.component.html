@@ -19,7 +19,8 @@
         [name]="(userFullName$ | async) || content.ACCOUNT_STATUS.DEFAULT_NAME"
         [email]="(user$ | async)?.email || content.ACCOUNT_STATUS.DEFAULT_EMAIL"
         [memberSince]="(user$ | async)?.createdAt"
-        [sessionExpiresIn]="sessionExpiry$ | async">
+        [sessionExpiresIn]="sessionExpiry$ | async"
+        [accessTokenExpiresIn]="accessTokenExpiry$ | async">
       </ui-account-status-card>
     </section>
 

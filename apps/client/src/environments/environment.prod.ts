@@ -11,7 +11,9 @@ export const environment = {
   auth: {
     tokenKey: 'mean_auth_token',
     tokenExpirationKey: 'mean_token_expiration',
+    accessTokenExpirationKey: 'mean_access_token_expiration',
     sessionTimeout: 8 * 60 * 60 * 1000, // 8 hours in milliseconds as required by assessment
+    accessTokenTimeout: 15 * 60 * 1000,
   },
   api: {
     timeout: 30000, // 30 seconds

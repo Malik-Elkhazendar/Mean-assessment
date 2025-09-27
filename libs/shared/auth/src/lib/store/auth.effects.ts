@@ -2,7 +2,7 @@ import { Injectable, inject } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { Router } from '@angular/router';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
-import { of } from 'rxjs';
+import { concat, of } from 'rxjs';
 import { catchError, exhaustMap, map, switchMap, tap } from 'rxjs/operators';
 import { User, AuthResponse } from '@mean-assessment/data-models';
 import { API_ROUTES, ERROR_MESSAGES } from '@mean-assessment/constants';
@@ -22,14 +22,25 @@ export class AuthEffects {
       switchMap(() => {
         try {
           const token = localStorage.getItem(this.authConfig.auth.tokenKey);
-          const expiration = localStorage.getItem(this.authConfig.auth.tokenExpirationKey);
-          if (!token || !expiration) return of(AuthActions.initializeAuthFailure());
+          const sessionExpirationRaw = localStorage.getItem(this.authConfig.auth.tokenExpirationKey);
+          const accessExpirationRaw = localStorage.getItem(this.authConfig.auth.accessTokenExpirationKey);
 
-          const expirationDate = new Date(parseInt(expiration, 10));
-          if (new Date() > expirationDate) {
-            localStorage.removeItem(this.authConfig.auth.tokenKey);
-            localStorage.removeItem(this.authConfig.auth.tokenExpirationKey);
+          if (!token || !sessionExpirationRaw) {
+            this.clearPersistedAuth();
             return of(AuthActions.initializeAuthFailure());
+          }
+
+          const now = Date.now();
+          const sessionExpiration = parseInt(sessionExpirationRaw, 10);
+
+          if (Number.isNaN(sessionExpiration) || now >= sessionExpiration) {
+            this.clearPersistedAuth();
+            return of(AuthActions.initializeAuthFailure());
+          }
+
+          const accessExpiration = accessExpirationRaw ? parseInt(accessExpirationRaw, 10) : Number.NaN;
+          if (!accessExpirationRaw || Number.isNaN(accessExpiration) || now >= accessExpiration) {
+            return of(AuthActions.refreshToken());
           }
 
           const bootstrap$ = of(
@@ -39,16 +50,18 @@ export class AuthEffects {
             })
           );
 
-          const refresh$ = this.http
+          const profile$ = this.http
             .get<{ user: User }>(`${this.authConfig.apiUrl}${API_ROUTES.USERS.PROFILE_ME}`)
             .pipe(
               map((response) =>
                 AuthActions.initializeAuthSuccess({ user: { ...response.user, updatedAt: new Date() }, token })
               ),
-              catchError(() => of(AuthActions.clearError()))
+              catchError((error) =>
+                of(AuthActions.refreshTokenFailure({ error: this.extractErrorMessage(error) }))
+              )
             );
 
-          return bootstrap$.pipe(switchMap(() => refresh$));
+          return concat(bootstrap$, profile$);
         } catch {
           // On unexpected errors, fail initialization gracefully
           return of(AuthActions.initializeAuthFailure());
@@ -115,26 +128,74 @@ export class AuthEffects {
     { dispatch: false }
   );
 
+  refreshToken$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(AuthActions.refreshToken),
+      exhaustMap(() =>
+        this.http
+          .post<AuthResponse>(
+            `${this.authConfig.apiUrl}${API_ROUTES.AUTH.REFRESH}`,
+            {},
+            { withCredentials: true }
+          )
+          .pipe(
+            map((authResponse) => {
+              this.persistAuthData(authResponse.accessToken, { isRefresh: true });
+              return AuthActions.refreshTokenSuccess({ authResponse });
+            }),
+            catchError((error) =>
+              of(AuthActions.refreshTokenFailure({ error: this.extractErrorMessage(error) }))
+            )
+          )
+      )
+    )
+  );
+
+  refreshTokenSuccess$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(AuthActions.refreshTokenSuccess),
+      switchMap(({ authResponse }) =>
+        this.http
+          .get<{ user: User }>(`${this.authConfig.apiUrl}${API_ROUTES.USERS.PROFILE_ME}`)
+          .pipe(
+            map((response) =>
+              AuthActions.initializeAuthSuccess({
+                user: { ...response.user, updatedAt: new Date() },
+                token: authResponse.accessToken,
+              })
+            ),
+            catchError((error) =>
+              of(AuthActions.refreshTokenFailure({ error: this.extractErrorMessage(error) }))
+            )
+          )
+      )
+    )
+  );
+
   signout$ = createEffect(() =>
     this.actions$.pipe(
       ofType(AuthActions.signout),
       map(() => {
-        try {
-          localStorage.removeItem(this.authConfig.auth.tokenKey);
-          localStorage.removeItem(this.authConfig.auth.tokenExpirationKey);
-          localStorage.removeItem('auth_token');
-          localStorage.removeItem('auth_user');
-          localStorage.removeItem('auth_expiration');
-          sessionStorage.removeItem('auth_token');
-          sessionStorage.removeItem('auth_user');
-          sessionStorage.removeItem('auth_expiration');
-        } catch {
-          // ignore cleanup errors
-        }
+        this.clearPersistedAuth();
         this.router.navigate(['/auth/login']);
         return AuthActions.signoutSuccess();
       })
     )
+  );
+
+  refreshTokenFailure$ = createEffect(
+    () =>
+      this.actions$.pipe(
+        ofType(AuthActions.refreshTokenFailure),
+        tap(({ error }) => {
+          this.clearPersistedAuth();
+          console.warn('Session ended:', error);
+          this.router.navigate(['/auth/login'], { queryParams: { reason: 'session-expired' } }).catch(() => {
+            window.location.href = '/auth/login';
+          });
+        })
+      ),
+    { dispatch: false }
   );
 
   // Forgot password
@@ -187,18 +248,50 @@ export class AuthEffects {
     { dispatch: false }
   );
 
-  private persistAuthData(token: string): void {
-    const expirationTime = Date.now() + this.authConfig.auth.sessionTimeout;
+  private persistAuthData(token: string, options?: { isRefresh?: boolean }): void {
+    const now = Date.now();
     localStorage.setItem(this.authConfig.auth.tokenKey, token);
-    localStorage.setItem(this.authConfig.auth.tokenExpirationKey, expirationTime.toString());
+
+    const accessExpiration = now + this.authConfig.auth.accessTokenTimeout;
+    localStorage.setItem(
+      this.authConfig.auth.accessTokenExpirationKey,
+      accessExpiration.toString()
+    );
+
+    const sessionExpirationKey = this.authConfig.auth.tokenExpirationKey;
+    const hasSessionExpiration = !!localStorage.getItem(sessionExpirationKey);
+
+    if (!options?.isRefresh || !hasSessionExpiration) {
+      const sessionExpiration = now + this.authConfig.auth.sessionTimeout;
+      localStorage.setItem(sessionExpirationKey, sessionExpiration.toString());
+    }
+  }
+
+  private clearPersistedAuth(): void {
+    try {
+      localStorage.removeItem(this.authConfig.auth.tokenKey);
+      localStorage.removeItem(this.authConfig.auth.tokenExpirationKey);
+      localStorage.removeItem(this.authConfig.auth.accessTokenExpirationKey);
+      localStorage.removeItem('auth_token');
+      localStorage.removeItem('auth_user');
+      localStorage.removeItem('auth_expiration');
+      sessionStorage.removeItem('auth_token');
+      sessionStorage.removeItem('auth_user');
+      sessionStorage.removeItem('auth_expiration');
+    } catch {
+      // ignore cleanup errors
+    }
   }
 
   private extractErrorMessage(error: HttpErrorResponse): string {
     if (error.error?.message) return error.error.message;
     if (error.error?.error?.message) return error.error.error.message;
-    if (error.status === 401) return ERROR_MESSAGES.AUTH.INVALID_CREDENTIALS;
+    if (error.status === 401) {
+      if (error.url && error.url.includes(API_ROUTES.AUTH.REFRESH)) {
+        return ERROR_MESSAGES.AUTH.TOKEN_EXPIRED;
+      }
+      return ERROR_MESSAGES.AUTH.INVALID_CREDENTIALS;
+    }
     return ERROR_MESSAGES.GENERAL.SOMETHING_WENT_WRONG;
   }
 }
-
-

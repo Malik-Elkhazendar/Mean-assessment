@@ -5,7 +5,9 @@ export interface AuthConfig {
   auth: {
     tokenKey: string;
     tokenExpirationKey: string;
+    accessTokenExpirationKey: string;
     sessionTimeout: number;
+    accessTokenTimeout: number;
   };
 }
 

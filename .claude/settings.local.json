@@ -37,7 +37,9 @@
       "Bash(grep:*)",
       "Bash(npm start)",
       "Bash(npm run:*)",
-      "Bash(node:*)"
+      "Bash(node:*)",
+      "Bash(claude update)",
+      "Bash(claude migrate-installer:*)"
     ],
     "deny": []
   },

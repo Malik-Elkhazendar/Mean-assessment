@@ -11,6 +11,7 @@ export const API_ROUTES = {
     SIGNOUT: '/api/auth/signout',
     FORGOT_PASSWORD: '/api/auth/forgot-password',
     RESET_PASSWORD: '/api/auth/reset-password',
+    REFRESH: '/api/auth/refresh',
     // Note: Profile management is in USERS routes to avoid duplication
   },
   

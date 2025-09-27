@@ -17,6 +17,7 @@ export class AccountStatusCardComponent {
   @Input() email?: string;
   @Input() name?: string;
   @Input() sessionExpiresIn?: string | null;
+  @Input() accessTokenExpiresIn?: string | null;
 
   formatDate(date: Date | string | undefined): string {
     if (!date) return 'Not available';

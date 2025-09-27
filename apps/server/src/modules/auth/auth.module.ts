@@ -2,12 +2,14 @@ import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
+import { MongooseModule } from '@nestjs/mongoose';
 import { UserModule } from '../users/user.module';
 import { EmailModule } from '../email/email.module';
 import { AuthService } from './services/auth.service';
 import { AuthController } from './controllers/auth.controller';
 import { JwtStrategy } from './strategies/jwt.strategy';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
+import { RefreshTokenEntity, RefreshTokenSchema } from './schemas/refresh-token.schema';
 
 /**
  * Authentication Module
@@ -21,6 +23,11 @@ import { JwtAuthGuard } from './guards/jwt-auth.guard';
   imports: [
     // Configuration module for auth settings
     ConfigModule,
+    
+    // Mongoose model registration for refresh tokens
+    MongooseModule.forFeature([
+      { name: RefreshTokenEntity.name, schema: RefreshTokenSchema },
+    ]),
     
     // User module for user management operations
     UserModule,
@@ -42,7 +49,8 @@ import { JwtAuthGuard } from './guards/jwt-auth.guard';
       useFactory: async (configService: ConfigService) => ({
         secret: configService.get<string>('auth.jwtSecret'),
         signOptions: {
-          expiresIn: configService.get<string>('auth.jwtExpiresIn'),
+          // Use explicit access token TTL (fallback handled in config)
+          expiresIn: configService.get<string>('auth.jwtAccessExpiresIn'),
           issuer: 'mean-assessment-api',
           audience: 'mean-assessment-client',
         },

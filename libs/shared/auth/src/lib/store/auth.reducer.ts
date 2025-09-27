@@ -7,6 +7,7 @@ export interface AuthState {
   token: string | null;
   isAuthenticated: boolean;
   loading: boolean;
+  refreshing: boolean;
   error: string | null;
   initialized: boolean;
   message: string | null;
@@ -17,6 +18,7 @@ export const initialState: AuthState = {
   token: null,
   isAuthenticated: false,
   loading: false,
+  refreshing: false,
   error: null,
   initialized: false,
   message: null,
@@ -31,6 +33,7 @@ export const authReducer = createReducer(
     token,
     isAuthenticated: true,
     loading: false,
+    refreshing: false,
     error: null,
     initialized: true,
   })),
@@ -40,6 +43,7 @@ export const authReducer = createReducer(
     token: null,
     isAuthenticated: false,
     loading: false,
+    refreshing: false,
     error: null,
     initialized: true,
   })),
@@ -50,6 +54,7 @@ export const authReducer = createReducer(
     token: authResponse.accessToken,
     isAuthenticated: true,
     loading: false,
+    refreshing: false,
     error: null,
   })),
   on(AuthActions.signinFailure, (state, { error }) => ({
@@ -58,6 +63,7 @@ export const authReducer = createReducer(
     token: null,
     isAuthenticated: false,
     loading: false,
+    refreshing: false,
     error,
   })),
   on(AuthActions.signup, (state) => ({ ...state, loading: true, error: null })),
@@ -67,6 +73,7 @@ export const authReducer = createReducer(
     token: authResponse.accessToken,
     isAuthenticated: true,
     loading: false,
+    refreshing: false,
     error: null,
   })),
   on(AuthActions.signupFailure, (state, { error }) => ({
@@ -75,9 +82,28 @@ export const authReducer = createReducer(
     token: null,
     isAuthenticated: false,
     loading: false,
+    refreshing: false,
     error,
   })),
   on(AuthActions.signout, AuthActions.signoutSuccess, () => ({ ...initialState })),
+  on(AuthActions.refreshToken, (state) => ({
+    ...state,
+    refreshing: true,
+    error: null,
+  })),
+  on(AuthActions.refreshTokenSuccess, (state, { authResponse }) => ({
+    ...state,
+    user: { ...authResponse.user, updatedAt: new Date() },
+    token: authResponse.accessToken,
+    isAuthenticated: true,
+    refreshing: false,
+    error: null,
+  })),
+  on(AuthActions.refreshTokenFailure, (state, { error }) => ({
+    ...initialState,
+    initialized: true,
+    error,
+  })),
   on(AuthActions.clearError, (state) => ({ ...state, error: null })),
   on(AuthActions.clearMessage, (state) => ({ ...state, message: null })),
   // Forgot password flow

@@ -5,8 +5,10 @@ export interface AuthState {
   token: string | null;
   isAuthenticated: boolean;
   loading: boolean;
+  refreshing: boolean;
   error: string | null;
   initialized: boolean;
+  message: string | null;
 }
 
 export interface AppState {

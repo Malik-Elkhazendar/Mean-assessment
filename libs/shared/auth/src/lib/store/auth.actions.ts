@@ -21,6 +21,16 @@ export const signout = createAction('[Auth] Sign Out');
 export const logout = createAction('[Auth] Sign Out'); // alias
 export const signoutSuccess = createAction('[Auth] Sign Out Success');
 
+export const refreshToken = createAction('[Auth] Refresh Token');
+export const refreshTokenSuccess = createAction(
+  '[Auth] Refresh Token Success',
+  props<{ authResponse: AuthResponse }>()
+);
+export const refreshTokenFailure = createAction(
+  '[Auth] Refresh Token Failure',
+  props<{ error: string }>()
+);
+
 export const clearError = createAction('[Auth] Clear Error');
 export const clearMessage = createAction('[Auth] Clear Message');
 
@@ -65,6 +75,9 @@ export const AuthActions = {
   signout,
   logout,
   signoutSuccess,
+  refreshToken,
+  refreshTokenSuccess,
+  refreshTokenFailure,
   clearError,
   clearMessage,
   forgotPassword,

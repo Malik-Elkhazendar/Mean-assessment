@@ -12,6 +12,7 @@
         "outputPath": "dist/libs/shared/ui",
         "main": "libs/shared/ui/src/index.ts",
         "tsConfig": "libs/shared/ui/tsconfig.lib.json",
+        "rootDir": "../../..",
         "assets": ["libs/shared/ui/*.md"]
       }
     }
