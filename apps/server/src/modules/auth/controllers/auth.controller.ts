@@ -166,13 +166,19 @@ export class AuthController {
     @Res({ passthrough: true }) response: Response,
   ): Promise<AuthResponse> {
     const refreshCookie = this.getRefreshCookie(request);
-    const { authResponse, newCookieValue } = await this.authService.refreshSession(
-      refreshCookie,
-      this.buildSessionMetadata(request),
-      request.correlationId,
-    );
-    this.authService.setRefreshCookie(response, newCookieValue);
-    return authResponse;
+    try {
+      const { authResponse, newCookieValue } = await this.authService.refreshSession(
+        refreshCookie,
+        this.buildSessionMetadata(request),
+        request.correlationId,
+      );
+      this.authService.setRefreshCookie(response, newCookieValue);
+      return authResponse;
+    } catch (error) {
+      // On refresh failure, proactively clear the refresh cookie to avoid stale tokens
+      this.authService.clearRefreshCookie(response);
+      throw error;
+    }
   }
 
   /**

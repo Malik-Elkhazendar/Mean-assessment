@@ -1,6 +1,7 @@
 export const environment = {
   production: true,
-  apiUrl: 'http://localhost:3000/api', // Backend API URL - update for actual production deployment
+  // Use base API origin without path; routes already include '/api'
+  apiUrl: 'http://localhost:3000',
   appName: 'MEAN Assessment',
   version: '1.0.0',
   features: {

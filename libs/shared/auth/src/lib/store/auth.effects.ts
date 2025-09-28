@@ -221,11 +221,22 @@ export class AuthEffects {
   signout$ = createEffect(() =>
     this.actions$.pipe(
       ofType(AuthActions.signout),
-      map(() => {
-        this.clearPersistedAuth();
-        this.router.navigate(['/auth/login']);
-        return AuthActions.signoutSuccess();
-      })
+      exhaustMap(() =>
+        this.http
+          .post<void>(
+            `${this.authConfig.apiUrl}${API_ROUTES.AUTH.SIGNOUT}`,
+            {},
+            { withCredentials: true }
+          )
+          .pipe(
+            catchError(() => of(null)), // Ignore signout errors; proceed to clear client state
+            map(() => {
+              this.clearPersistedAuth();
+              this.router.navigate(['/auth/login']);
+              return AuthActions.signoutSuccess();
+            })
+          )
+      )
     )
   );
 
