@@ -8,6 +8,7 @@ export interface AuthConfig {
     accessTokenExpirationKey: string;
     sessionTimeout: number;
     accessTokenTimeout: number;
+    accessTokenRefreshBuffer: number;
   };
 }
 

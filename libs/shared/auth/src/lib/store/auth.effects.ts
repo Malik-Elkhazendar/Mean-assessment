@@ -2,8 +2,8 @@ import { Injectable, inject } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { Router } from '@angular/router';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
-import { concat, of } from 'rxjs';
-import { catchError, exhaustMap, map, switchMap, tap } from 'rxjs/operators';
+import { concat, of, EMPTY, timer } from 'rxjs';
+import { catchError, exhaustMap, map, switchMap, tap, takeUntil } from 'rxjs/operators';
 import { User, AuthResponse } from '@mean-assessment/data-models';
 import { API_ROUTES, ERROR_MESSAGES } from '@mean-assessment/constants';
 import { AUTH_CONFIG } from '../auth.config';
@@ -74,7 +74,13 @@ export class AuthEffects {
     this.actions$.pipe(
       ofType(AuthActions.signin),
       exhaustMap(({ credentials }) =>
-        this.http.post<AuthResponse>(`${this.authConfig.apiUrl}${API_ROUTES.AUTH.SIGNIN}`, credentials).pipe(
+        this.http
+          .post<AuthResponse>(
+            `${this.authConfig.apiUrl}${API_ROUTES.AUTH.SIGNIN}`,
+            credentials,
+            { withCredentials: true }
+          )
+          .pipe(
           map((authResponse) => {
             this.persistAuthData(authResponse.accessToken);
             return AuthActions.signinSuccess({ authResponse });
@@ -89,7 +95,13 @@ export class AuthEffects {
     this.actions$.pipe(
       ofType(AuthActions.signup),
       exhaustMap(({ userData }) =>
-        this.http.post<AuthResponse>(`${this.authConfig.apiUrl}${API_ROUTES.AUTH.SIGNUP}`, userData).pipe(
+        this.http
+          .post<AuthResponse>(
+            `${this.authConfig.apiUrl}${API_ROUTES.AUTH.SIGNUP}`,
+            userData,
+            { withCredentials: true }
+          )
+          .pipe(
           map((authResponse) => {
             this.persistAuthData(authResponse.accessToken);
             return AuthActions.signupSuccess({ authResponse });
@@ -169,6 +181,40 @@ export class AuthEffects {
             )
           )
       )
+    )
+  );
+
+  scheduleAccessTokenRefresh$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(
+        AuthActions.initializeAuthSuccess,
+        AuthActions.signinSuccess,
+        AuthActions.signupSuccess,
+        AuthActions.refreshTokenSuccess
+      ),
+      switchMap(() => {
+        const expiresAt = this.getAccessTokenExpirationMs();
+        if (!expiresAt) {
+          return EMPTY;
+        }
+
+        const now = Date.now();
+        const buffer = this.authConfig.auth.accessTokenRefreshBuffer;
+        const delay = Math.max(expiresAt - now - buffer, 0);
+
+        if (expiresAt <= now || delay <= 0) {
+          return of(AuthActions.refreshToken());
+        }
+
+        return timer(delay).pipe(
+          map(() => AuthActions.refreshToken()),
+          takeUntil(
+            this.actions$.pipe(
+              ofType(AuthActions.signout, AuthActions.refreshTokenFailure)
+            )
+          )
+        );
+      })
     )
   );
 
@@ -280,6 +326,20 @@ export class AuthEffects {
       sessionStorage.removeItem('auth_expiration');
     } catch {
       // ignore cleanup errors
+    }
+  }
+
+  private getAccessTokenExpirationMs(): number | null {
+    try {
+      const key = this.authConfig.auth.accessTokenExpirationKey;
+      const raw = localStorage.getItem(key);
+      if (!raw) {
+        return null;
+      }
+      const timestamp = parseInt(raw, 10);
+      return Number.isNaN(timestamp) ? null : timestamp;
+    } catch {
+      return null;
     }
   }
 

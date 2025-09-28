@@ -16,6 +16,9 @@ export default registerAs('auth', () => {
     ? (sameSiteRaw as (typeof allowedSameSite)[number])
     : 'lax';
 
+  const rawDomain = process.env.COOKIE_DOMAIN?.trim();
+  const cookieDomain = rawDomain && rawDomain !== 'localhost' ? rawDomain : undefined;
+
   return {
     // Secrets and lifetimes
     jwtSecret: process.env.JWT_SECRET || 'fallback-secret-key',
@@ -31,7 +34,7 @@ export default registerAs('auth', () => {
 
     // Cookie settings for HttpOnly refresh cookie
     cookie: {
-      domain: process.env.COOKIE_DOMAIN || 'localhost',
+      domain: cookieDomain,
       secure: process.env.COOKIE_SECURE === 'true' || nodeEnv === 'production',
       sameSite: cookieSameSite,
       // Path is fixed to refresh endpoint for least privilege

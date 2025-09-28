@@ -245,9 +245,9 @@ export class AuthService {
     };
 
     try {
-      const refreshTtlMs = this.configService.get<number>('auth.refreshTokenTtlMs');
-      const sessionTtlMs = this.configService.get<number>('auth.sessionTtlMs');
-      const bcryptRounds = this.configService.get<number>('auth.bcryptRounds') ?? 12;
+      const refreshTtlMs = Number(this.configService.get<number>('auth.refreshTokenTtlMs') ?? 900000);
+      const sessionTtlMs = Number(this.configService.get<number>('auth.sessionTtlMs') ?? 28800000);
+      const bcryptRounds = Number(this.configService.get<number>('auth.bcryptRounds') ?? 12);
 
       const now = Date.now();
       const expiresAt = new Date(now + refreshTtlMs);
@@ -286,9 +286,9 @@ export class AuthService {
    * Set HttpOnly refresh cookie using config-driven attributes
    */
   setRefreshCookie(res: Response, cookieValue: string): void {
-    const refreshTtlMs = this.configService.get<number>('auth.refreshTokenTtlMs');
+    const refreshTtlMs = Number(this.configService.get<number>('auth.refreshTokenTtlMs') ?? 900000);
     const cookieCfg = this.configService.get('auth.cookie') as {
-      domain: string;
+      domain?: string;
       secure: boolean;
       sameSite: 'lax' | 'strict' | 'none';
       path: string;
@@ -298,7 +298,7 @@ export class AuthService {
       httpOnly: true,
       secure: cookieCfg.secure,
       sameSite: cookieCfg.sameSite,
-      domain: cookieCfg.domain,
+      ...(cookieCfg.domain ? { domain: cookieCfg.domain } : {}),
       path: cookieCfg.path,
       maxAge: refreshTtlMs,
     });
@@ -309,7 +309,7 @@ export class AuthService {
    */
   clearRefreshCookie(res: Response): void {
     const cookieCfg = this.configService.get('auth.cookie') as {
-      domain: string;
+      domain?: string;
       secure: boolean;
       sameSite: 'lax' | 'strict' | 'none';
       path: string;
@@ -319,7 +319,7 @@ export class AuthService {
       httpOnly: true,
       secure: cookieCfg.secure,
       sameSite: cookieCfg.sameSite,
-      domain: cookieCfg.domain,
+      ...(cookieCfg.domain ? { domain: cookieCfg.domain } : {}),
       path: cookieCfg.path,
     });
   }
@@ -379,8 +379,8 @@ export class AuthService {
       }
 
       // Rotate: revoke current, create new with same sessionExpiresAt
-      const refreshTtlMs = this.configService.get<number>('auth.refreshTokenTtlMs');
-      const bcryptRounds = this.configService.get<number>('auth.bcryptRounds') ?? 12;
+      const refreshTtlMs = Number(this.configService.get<number>('auth.refreshTokenTtlMs') ?? 900000);
+      const bcryptRounds = Number(this.configService.get<number>('auth.bcryptRounds') ?? 12);
 
       const newOpaque = this.generateOpaqueToken();
       const newHash = await bcrypt.hash(newOpaque, bcryptRounds);
